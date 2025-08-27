@@ -1,3 +1,4 @@
+"use client";
 import HeroSection from "./Section/HeroSection"
 import ServiceSection from "./Section/ServiceSection"
 import BookingSection from "./Section/BookingSection"

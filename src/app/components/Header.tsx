@@ -28,8 +28,8 @@ const navItems = [
   { href: "/products", label: "SẢN PHẨM" },
   { href: "/services", label: "DỊCH VỤ" },
   { href: "/news", label: "TIN TỨC" },
-  { href: "/contact", label: "LIÊN HỆ" },
-  { href: "/about", label: "GIỚI THIỆU" },
+  { href: "/contacts", label: "LIÊN HỆ" },
+  { href: "/abouts", label: "GIỚI THIỆU" },
 ];
 
 export default function Header() {
