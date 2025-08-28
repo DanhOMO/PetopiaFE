@@ -25,7 +25,7 @@ import { usePathname } from "next/navigation";
 
 const navItems = [
   { href: "/", label: "TRANG CHỦ" },
-  { href: "/products", label: "SẢN PHẨM" },
+  { href: "/pets", label: "THÚ CƯNG" },
   { href: "/services", label: "DỊCH VỤ" },
   { href: "/news", label: "TIN TỨC" },
   { href: "/contacts", label: "LIÊN HỆ" },
