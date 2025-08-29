@@ -1,4 +1,19 @@
-import Image from "next/image"
+import { 
+  Facebook, 
+  Music2, 
+  Youtube, 
+  MapPin, 
+  Mail, 
+  Phone, 
+  Globe,
+  FileText,
+  Shield,
+  CreditCard,
+  Handshake,
+  Heart,
+  ShoppingCart,
+  Gift
+} from "lucide-react"
 
 export default function Footer() {
   return (
@@ -9,27 +24,27 @@ export default function Footer() {
           <h3 className="font-bold text-xl mb-4 text-orange-200">Petopia</h3>
           <div className="space-y-2 text-gray-100">
             <p className="flex items-center gap-2">
-              <span>📍</span> Địa chỉ: phường 11 Gò Vấp
+              <MapPin size={16} /> Địa chỉ: phường 11 Gò Vấp
             </p>
             <p className="flex items-center gap-2">
-              <span>📧</span> Email: abc@gmail.com
+              <Mail size={16} /> Email: abc@gmail.com
             </p>
             <p className="flex items-center gap-2">
-              <span>📞</span> Liên hệ: 092 532 37 37
+              <Phone size={16} /> Liên hệ: 092 532 37 37
             </p>
             <p className="flex items-center gap-2">
-              <span>🌐</span> Website: https://abc.com
+              <Globe size={16} /> Website: https://abc.com
             </p>
           </div>
           <div className="flex gap-3 mt-4">
             <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center hover-lift cursor-pointer">
-              📘
+              <Facebook size={20} />
             </div>
             <div className="w-10 h-10 bg-black rounded-full flex items-center justify-center hover-lift cursor-pointer">
-              🎵
+              <Music2 size={20} />
             </div>
             <div className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center hover-lift cursor-pointer">
-              📺
+              <Youtube size={20} />
             </div>
           </div>
         </div>
@@ -38,17 +53,17 @@ export default function Footer() {
         <div className="animate-slide-up" style={{animationDelay: '0.1s'}}>
           <h3 className="font-bold text-xl mb-4 text-orange-200">Chính Sách</h3>
           <ul className="space-y-3 text-gray-100">
-            <li className="hover:text-orange-200 transition-colors duration-300 cursor-pointer">
-              📋 Chính sách hỗ trợ
+            <li className="hover:text-orange-200 transition-colors duration-300 cursor-pointer flex items-center gap-2">
+              <FileText size={16} /> Chính sách hỗ trợ
             </li>
-            <li className="hover:text-orange-200 transition-colors duration-300 cursor-pointer">
-              🛡️ Chính sách bảo hành
+            <li className="hover:text-orange-200 transition-colors duration-300 cursor-pointer flex items-center gap-2">
+              <Shield size={16} /> Chính sách bảo hành
             </li>
-            <li className="hover:text-orange-200 transition-colors duration-300 cursor-pointer">
-              💳 Chính sách thanh toán
+            <li className="hover:text-orange-200 transition-colors duration-300 cursor-pointer flex items-center gap-2">
+              <CreditCard size={16} /> Chính sách thanh toán
             </li>
-            <li className="hover:text-orange-200 transition-colors duration-300 cursor-pointer">
-              🤝 Chính sách chăm sóc khách hàng
+            <li className="hover:text-orange-200 transition-colors duration-300 cursor-pointer flex items-center gap-2">
+              <Handshake size={16} /> Chính sách chăm sóc khách hàng
             </li>
           </ul>
         </div>
@@ -57,17 +72,17 @@ export default function Footer() {
         <div className="animate-slide-up" style={{animationDelay: '0.2s'}}>
           <h3 className="font-bold text-xl mb-4 text-orange-200">Góc Hỗ Trợ</h3>
           <ul className="space-y-3 text-gray-100">
-            <li className="hover:text-orange-200 transition-colors duration-300 cursor-pointer">
-              🐾 Giới thiệu về pet xinh
+            <li className="hover:text-orange-200 transition-colors duration-300 cursor-pointer flex items-center gap-2">
+              <Heart size={16} /> Giới thiệu về pet xinh
             </li>
-            <li className="hover:text-orange-200 transition-colors duration-300 cursor-pointer">
-              🛒 Hướng dẫn mua hàng
+            <li className="hover:text-orange-200 transition-colors duration-300 cursor-pointer flex items-center gap-2">
+              <ShoppingCart size={16} /> Hướng dẫn mua hàng
             </li>
-            <li className="hover:text-orange-200 transition-colors duration-300 cursor-pointer">
-              📞 Liên hệ với chúng tôi
+            <li className="hover:text-orange-200 transition-colors duration-300 cursor-pointer flex items-center gap-2">
+              <Phone size={16} /> Liên hệ với chúng tôi
             </li>
-            <li className="hover:text-orange-200 transition-colors duration-300 cursor-pointer">
-              🎁 Ưu đãi mua hàng
+            <li className="hover:text-orange-200 transition-colors duration-300 cursor-pointer flex items-center gap-2">
+              <Gift size={16} /> Ưu đãi mua hàng
             </li>
           </ul>
         </div>
@@ -85,9 +100,10 @@ export default function Footer() {
         </div>
       </div>
       
+     
       {/* Copyright */}
       <div className="mt-12 pt-8 border-t border-white/20 text-center text-gray-200">
-        <p>&copy; 2024 Petopia. Tất cả quyền được bảo lưu.</p>
+        <p>Chào mừng bạn đến với Petopia.</p>
       </div>
     </footer>
   )

@@ -51,7 +51,7 @@ export default function BookingSection() {
       </div>
       <Button className="bg-[#7B4F35] text-white rounded-full px-8 py-2 mt-8">Đăng ký</Button>
       <Image
-        src="/assets/icon/cat2Icon.png"
+        src="/assets/icon/dog4.png"
         alt="Cat Icon"
         width={120}
         height={120}

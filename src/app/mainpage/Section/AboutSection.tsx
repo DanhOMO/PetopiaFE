@@ -2,10 +2,10 @@ import Image from "next/image"
 import { Card, CardContent } from "@/components/ui/card"
 
 const pets = [
-  { id: 1, src: "/assets/imgs/dog1.png", alt: "Dog 1", bg: "bg-[#4DE1C1]" },
-  { id: 2, src: "/assets/imgs/dog2.png", alt: "Dog 2", bg: "bg-[#2B2B2B]" },
-  { id: 3, src: "/assets/imgs/cat1.png", alt: "Cat 1", bg: "bg-[#B8D8F7]" },
-  { id: 4, src: "/assets/imgs/dog3.png", alt: "Dog 3", bg: "bg-[#F7E3B8]" },
+  { id: 1, src: "/assets/icon/dog1.png", alt: "Dog 1", bg: "bg-[#4DE1C1]" },
+  { id: 2, src: "/assets/icon/dog2.png", alt: "Dog 2", bg: "bg-[#2B2B2B]" },
+  { id: 3, src: "/assets/icon/cat1.png", alt: "Cat 1", bg: "bg-[#B8D8F7]" },
+  { id: 4, src: "/assets/icon/dog3.png", alt: "Dog 3", bg: "bg-[#F7E3B8]" },
 ]
 
 export default function AboutSection() {
@@ -36,9 +36,9 @@ export default function AboutSection() {
         ))}
       </div>
       {/* Decor Images */}
-      <Image src="/assets/icon/catIcon.png" alt="Cat Decor" width={80} height={80} className="absolute top-8 left-0" />
-      <Image src="/assets/icon/cat2Icon.png" alt="Cat Decor" width={100} height={100} className="absolute top-8 right-0" />
-      <Image src="/assets/icon/cat3Icon.png" alt="Cat Decor" width={100} height={100} className="absolute bottom-8 right-0" />
+      <Image src="/assets/icon/cat1.png" alt="Cat Decor" width={80} height={80} className="absolute top-8 left-0" />
+      <Image src="/assets/icon/cat2.png" alt="Cat Decor" width={100} height={100} className="absolute top-8 right-0" />
+      <Image src="/assets/icon/cat3.png" alt="Cat Decor" width={100} height={100} className="absolute bottom-8 right-0" />
     </section>
   )
 }
