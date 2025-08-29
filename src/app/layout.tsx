@@ -36,26 +36,20 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${roboto.variable} antialiased`}
       >
         <TRPCProvider>
-         <div className="font-sans flex flex-col min-h-screen">
+         <div className="font-sans flex flex-col min-h-screen w-full">
                {/* Header */}
-               <header className="w-full bg-white">
-                 <div className="max-w-screen-xl mx-auto px-4">
-                   <Header />
-                 </div>
+               <header className="w-full sticky top-0 z-50 shadow-lg">
+                 <Header />
                </header>
          
                {/* Main content */}
                <main className="flex-1 w-full">
-                 <div className="max-w-screen-xl mx-auto px-4">
-                   {children}
-                 </div>
+                 {children}
                </main>
          
                {/* Footer */}
-               <footer className="w-full bg-white">
-                 <div className="max-w-screen-xl mx-auto px-4">
-                   <Footer />
-                 </div>
+               <footer className="w-full">
+                 <Footer />
                </footer>
              </div>
         </TRPCProvider>
