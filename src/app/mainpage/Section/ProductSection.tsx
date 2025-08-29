@@ -89,11 +89,7 @@ export default function ProductSection() {
                 
                 {/* Content Overlay */}
                 <div className="absolute bottom-0 left-0 right-0 p-4 text-white z-10">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-6 h-6 bg-[#A0694B] rounded-full flex items-center justify-center">
-                      <span className="text-white text-xs">🐾</span>
-                    </div>
-                  </div>
+                  
                   
                   <h3 className="font-bold text-lg mb-2 line-clamp-2">{product.title}</h3>
                   
@@ -103,7 +99,7 @@ export default function ProductSection() {
                   </div>
                   
                   <p className="text-gray-200 text-sm mb-3">
-                    🛡️ Đảm bảo an toàn tuyệt đối và đem lại sự thoải mái nhất cho bé
+                    Mô tả
                   </p>
                   
                   <button className="w-full bg-[#7B4F35] hover:bg-[#6B3F25] text-white py-2 px-4 rounded-lg transition-colors duration-300 font-semibold flex items-center justify-center gap-2">
