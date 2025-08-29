@@ -106,8 +106,9 @@ export default function ProductSection() {
                     🛡️ Đảm bảo an toàn tuyệt đối và đem lại sự thoải mái nhất cho bé
                   </p>
                   
-                  <button className="w-full bg-[#7B4F35] hover:bg-[#6B3F25] text-white py-2 px-4 rounded-lg transition-colors duration-300 font-semibold">
+                  <button className="w-full bg-[#7B4F35] hover:bg-[#6B3F25] text-white py-2 px-4 rounded-lg transition-colors duration-300 font-semibold flex items-center justify-center gap-2">
                     Thêm vào giỏ hàng
+                    <span className="text-sm">🐾</span>
                   </button>
                 </div>
               </Card>
