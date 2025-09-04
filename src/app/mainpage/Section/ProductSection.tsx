@@ -1,58 +1,19 @@
 import { Card, CardContent } from "@/components/ui/card"
 import Image from "next/image"
+import { trpc } from "@/utils/trpc"
+import {Loading} from  "../../components/Loading"
 
-const products = [
-  {
-    id: 1,
-    image: "/assets/imgs/imgStore/img0522-8245.jpeg",
-    title: "Thức ăn khô cho chó",
-    price: "299.000đ",
-    originalPrice: "350.000đ",
-    discount: "-15%"
-  },
-  {
-    id: 2,
-    image: "/assets/imgs/imgStore/img0800-2361.jpeg",
-    title: "Đồ chơi cho mèo",
-    price: "89.000đ",
-    originalPrice: "120.000đ",
-    discount: "-26%"
-  },
-  {
-    id: 3,
-    image: "/assets/imgs/imgStore/img0848-8557.jpeg",
-    title: "Vòng cổ thú cưng",
-    price: "159.000đ",
-    originalPrice: "200.000đ",
-    discount: "-20%"
-  },
-  {
-    id: 4,
-    image: "/assets/imgs/imgStore/img0912-4774.jpeg",
-    title: "Lồng vận chuyển",
-    price: "450.000đ",
-    originalPrice: "550.000đ",
-    discount: "-18%"
-  },
-  {
-    id: 5,
-    image: "/assets/imgs/imgStore/img2078-8690.jpeg",
-    title: "Bình sữa cho thú cưng",
-    price: "75.000đ",
-    originalPrice: "95.000đ",
-    discount: "-21%"
-  },
-  {
-    id: 6,
-    image: "/assets/imgs/imgStore/img2079-7798.jpeg",
-    title: "Phụ kiện trang trí",
-    price: "125.000đ",
-    originalPrice: "150.000đ",
-    discount: "-17%"
-  },
-]
-
-export default function ProductSection() {
+export default function petsection() {
+    const { data: pets, isLoading, error } = trpc.pet.getAll.useQuery();
+  const { data: petImgs } = trpc.petImg.getAll.useQuery();
+  if (isLoading) return <Loading />;
+  if (error) return <div className="text-center py-10 text-red-500">Lỗi: {error.message}</div>;
+   // Lấy thumbnail cho từng pet
+    const getThumbnail = (pet_id: string) => {
+      const img = petImgs?.find((img) => img.pet_id === pet_id && img.is_thumbnail);
+      return img?.image_url || "/imgs/imgPet/animal-8165466_1280.jpg";
+    };
+  if (!pets) return null;
   return (
     <section className="bg-[#F5D7B7] py-10 px-4 flex flex-col items-center relative">
       {/* Title */}
@@ -64,17 +25,17 @@ export default function ProductSection() {
         </div>
       </div>
       
-      {/* Products Grid with max width like ServiceSection */}
+      {/* pets Grid with max width like ServiceSection */}
       <div className="w-full max-w-6xl">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
-          {products.map((product) => (
-            <div key={product.id} className="relative group cursor-pointer">
+          {pets.map((pet) => (
+            <div key={pet.pet_id} className="relative group cursor-pointer">
               <Card className="relative h-80 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 border-0">
                 {/* Background Image */}
                 <div className="absolute inset-0">
                   <Image 
-                    src={product.image} 
-                    alt={product.title} 
+                    src={getThumbnail(pet.pet_id)} 
+                    alt={pet.name} 
                     fill
                     className="object-cover group-hover:scale-110 transition-transform duration-500"
                   />
@@ -84,18 +45,24 @@ export default function ProductSection() {
                 
                 {/* Discount Badge */}
                 <div className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold z-10 shadow-lg">
-                  {product.discount}
+                  {pet.discount_price ? "Giảm giá" : "Mới"}
                 </div>
                 
                 {/* Content Overlay */}
                 <div className="absolute bottom-0 left-0 right-0 p-4 text-white z-10">
                   
                   
-                  <h3 className="font-bold text-lg mb-2 line-clamp-2">{product.title}</h3>
+                  <h3 className="font-bold text-lg mb-2 line-clamp-2">{pet.name}</h3>
                   
                   <div className="flex items-center gap-2 mb-3">
-                    <span className="text-[#F5D7B7] font-bold text-xl">{product.price}</span>
-                    <span className="text-gray-300 line-through text-sm">{product.originalPrice}</span>
+                    {pet.discount_price ? (
+                  <>
+                    <span className="text-[#F5D7B7] font-bold text-xl">{pet.discount_price.toLocaleString()}₫</span>
+                    <span className="text-gray-300 line-through text-sm">{pet.price.toLocaleString()}₫</span>
+                  </>
+                  ) : (
+                  <span className="text-[#F5D7B7] font-bold text-xl">{pet.price.toLocaleString()}₫</span>
+                  )}
                   </div>
                   
                   <p className="text-gray-200 text-sm mb-3">
