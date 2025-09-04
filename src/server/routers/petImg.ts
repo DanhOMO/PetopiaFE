@@ -25,6 +25,49 @@ export const petImgRouter = router({
         is_thumbnail: true,
         created_at: new Date().toISOString(),
       },
+      // Ảnh cho các sản phẩm bổ sung
+      {
+        image_id: "IMG004",
+        pet_id: "P003",
+        image_url: "/assets/imgs/imgStore/img0522-8245.jpeg",
+        is_thumbnail: true,
+        created_at: new Date().toISOString(),
+      },
+      {
+        image_id: "IMG005",
+        pet_id: "P004",
+        image_url: "/assets/imgs/imgStore/img0800-2361.jpeg",
+        is_thumbnail: true,
+        created_at: new Date().toISOString(),
+      },
+      {
+        image_id: "IMG006",
+        pet_id: "P005",
+        image_url: "/assets/imgs/imgStore/img0848-8557.jpeg",
+        is_thumbnail: true,
+        created_at: new Date().toISOString(),
+      },
+      {
+        image_id: "IMG007",
+        pet_id: "P006",
+        image_url: "/assets/imgs/imgStore/img0912-4774.jpeg",
+        is_thumbnail: true,
+        created_at: new Date().toISOString(),
+      },
+      {
+        image_id: "IMG008",
+        pet_id: "P007",
+        image_url: "/assets/imgs/imgStore/img2078-8690.jpeg",
+        is_thumbnail: true,
+        created_at: new Date().toISOString(),
+      },
+      {
+        image_id: "IMG009",
+        pet_id: "P008",
+        image_url: "/assets/imgs/imgStore/img2079-7798.jpeg",
+        is_thumbnail: true,
+        created_at: new Date().toISOString(),
+      },
     ];
   }),
 
