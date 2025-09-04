@@ -1,52 +1,109 @@
-import Image from "next/image"
+import { 
+  Facebook, 
+  Music2, 
+  Youtube, 
+  MapPin, 
+  Mail, 
+  Phone, 
+  Globe,
+  FileText,
+  Shield,
+  CreditCard,
+  Handshake,
+  Heart,
+  ShoppingCart,
+  Gift
+} from "lucide-react"
 
 export default function Footer() {
   return (
-    <footer className="bg-[#7B4F35] text-white py-8 px-6">
+    <footer className="gradient-primary text-white py-12 px-6 animate-fade-in">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-8">
         {/* Petopia Info */}
-        <div>
-          <h3 className="font-bold text-lg mb-2">Petopia</h3>
-          <p className="mb-1">Địa chỉ: phường 11 Gò Vấp</p>
-          <p className="mb-1">Email: abc@gmail.com</p>
-          <p className="mb-1">Liên hệ: 092 532 37 37</p>
-          <p className="mb-3">Website: https://abc.com</p>
-          <div className="flex gap-3 mt-2">
-            <Image src="/assets/icon/facebook.png" alt="Facebook" width={36} height={36} />
-            <Image src="/assets/icon/tiktok.png" alt="TikTok" width={36} height={36} />
-            <Image src="/assets/icon/youtube.png" alt="YouTube" width={36} height={36} />
+        <div className="animate-slide-up space-y-3">
+          <h3 className="font-bold text-xl mb-4 text-orange-200">Petopia</h3>
+          <div className="space-y-2 text-gray-100">
+            <p className="flex items-center gap-2">
+              <MapPin size={16} /> Địa chỉ: phường 11 Gò Vấp
+            </p>
+            <p className="flex items-center gap-2">
+              <Mail size={16} /> Email: abc@gmail.com
+            </p>
+            <p className="flex items-center gap-2">
+              <Phone size={16} /> Liên hệ: 092 532 37 37
+            </p>
+            <p className="flex items-center gap-2">
+              <Globe size={16} /> Website: https://abc.com
+            </p>
+          </div>
+          <div className="flex gap-3 mt-4">
+            <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center hover-lift cursor-pointer">
+              <Facebook size={20} />
+            </div>
+            <div className="w-10 h-10 bg-black rounded-full flex items-center justify-center hover-lift cursor-pointer">
+              <Music2 size={20} />
+            </div>
+            <div className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center hover-lift cursor-pointer">
+              <Youtube size={20} />
+            </div>
           </div>
         </div>
+
         {/* Chính Sách */}
-        <div>
-          <h3 className="font-bold text-lg mb-2">Chính Sách</h3>
-          <ul className="space-y-1">
-            <li>Chính sách hỗ trợ</li>
-            <li>Chính sách bảo hành</li>
-            <li>Chính sách thanh toán</li>
-            <li>Chính sách chăm sóc khách hàng</li>
+        <div className="animate-slide-up" style={{animationDelay: '0.1s'}}>
+          <h3 className="font-bold text-xl mb-4 text-orange-200">Chính Sách</h3>
+          <ul className="space-y-3 text-gray-100">
+            <li className="hover:text-orange-200 transition-colors duration-300 cursor-pointer flex items-center gap-2">
+              <FileText size={16} /> Chính sách hỗ trợ
+            </li>
+            <li className="hover:text-orange-200 transition-colors duration-300 cursor-pointer flex items-center gap-2">
+              <Shield size={16} /> Chính sách bảo hành
+            </li>
+            <li className="hover:text-orange-200 transition-colors duration-300 cursor-pointer flex items-center gap-2">
+              <CreditCard size={16} /> Chính sách thanh toán
+            </li>
+            <li className="hover:text-orange-200 transition-colors duration-300 cursor-pointer flex items-center gap-2">
+              <Handshake size={16} /> Chính sách chăm sóc khách hàng
+            </li>
           </ul>
         </div>
+
         {/* Góc Hỗ Trợ */}
-        <div>
-          <h3 className="font-bold text-lg mb-2">Góc Hỗ Trợ</h3>
-          <ul className="space-y-1">
-            <li>Giới thiệu về pet xinh</li>
-            <li>Hướng dẫn mua hàng</li>
-            <li>Liên hệ với chúng tôi</li>
-            <li>Ưu đãi mua hàng</li>
+        <div className="animate-slide-up" style={{animationDelay: '0.2s'}}>
+          <h3 className="font-bold text-xl mb-4 text-orange-200">Góc Hỗ Trợ</h3>
+          <ul className="space-y-3 text-gray-100">
+            <li className="hover:text-orange-200 transition-colors duration-300 cursor-pointer flex items-center gap-2">
+              <Heart size={16} /> Giới thiệu về pet xinh
+            </li>
+            <li className="hover:text-orange-200 transition-colors duration-300 cursor-pointer flex items-center gap-2">
+              <ShoppingCart size={16} /> Hướng dẫn mua hàng
+            </li>
+            <li className="hover:text-orange-200 transition-colors duration-300 cursor-pointer flex items-center gap-2">
+              <Phone size={16} /> Liên hệ với chúng tôi
+            </li>
+            <li className="hover:text-orange-200 transition-colors duration-300 cursor-pointer flex items-center gap-2">
+              <Gift size={16} /> Ưu đãi mua hàng
+            </li>
           </ul>
         </div>
+
         {/* Hình ảnh bên phải */}
-        <div className="hidden md:block">
-          <Image
-            src="/assets/imgs/footer-img.png"
-            alt="Footer Image"
-            width={180}
-            height={140}
-            className="rounded-lg rotate-6 shadow-lg"
-          />
+        <div className="hidden md:block animate-scale-in" style={{animationDelay: '0.3s'}}>
+          <div className="relative">
+            <div className="absolute inset-0 bg-orange-300 rounded-lg rotate-3 opacity-50"></div>
+            <div className="relative bg-white p-4 rounded-lg rotate-6 hover-lift transition-transform duration-500 hover:rotate-2">
+              <div className="w-40 h-32 bg-gradient-to-br from-orange-200 to-yellow-200 rounded-lg flex items-center justify-center text-6xl">
+                🐱
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
+      
+     
+      {/* Copyright */}
+      <div className="mt-12 pt-8 border-t border-white/20 text-center text-gray-200">
+        <p>Chào mừng bạn đến với Petopia.</p>
       </div>
     </footer>
   )

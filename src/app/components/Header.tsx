@@ -6,18 +6,25 @@ import {
   AvatarImage,
   AvatarFallback,
 } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
+
 import {
   NavigationMenu,
   NavigationMenuList,
   NavigationMenuItem,
   NavigationMenuLink,
 } from "@/components/ui/navigation-menu";
+import { 
+  Search, 
+  Phone, 
+  ShoppingCart, 
+  Menu, 
+  Home,
+  Heart,
+  Settings,
+  Newspaper,
+  MessageCircle,
+  Info
+} from "lucide-react";
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -36,105 +43,89 @@ export default function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="w-full bg-[#7B4F35] flex items-center justify-between px-8 py-3">
+    <header className="w-full bg-[#7B4F35] flex items-center justify-between px-4 lg:px-8 py-4 backdrop-blur-sm transition-all duration-300">
       {/* Left: Logo & Navigation */}
-      <div className="flex items-center gap-6">
-        <Link href="/" className="flex items-center gap-3">
+      <div className="flex items-center gap-4 lg:gap-8">
+        <Link href="/" className="flex items-center gap-3 group">
           <Image
             src="/assets/imgs/logo.png"
             alt="Petopia Logo"
             width={48}
             height={48}
-            className="h-12 w-12 border-2 border-white rounded-full border-solid"
+            className="h-10 w-10 lg:h-12 lg:w-12 border-2 border-white rounded-full border-solid transition-transform duration-300 group-hover:scale-110"
           />
-          <span className="text-white text-xl font-medium">Petopia</span>
+          <span className="text-white text-lg lg:text-xl font-medium group-hover:text-orange-200 transition-colors duration-300">Petopia</span>
         </Link>
 
-        {/* Navigation */}
-        <NavigationMenu>
-          <NavigationMenuList className="flex gap-4">
+        {/* Navigation - Hidden on mobile */}
+        <NavigationMenu className="hidden lg:block">
+          <NavigationMenuList className="flex gap-2">
             {navItems.map((item) => (
               <NavigationMenuItem key={item.href}>
                 <NavigationMenuLink
                   asChild
-                  className={`text-white hover: ${
-                    pathname === item.href ? "font-bold " : ""
+                  className={`px-4 py-2 rounded-xl text-white text-sm font-medium transition-all duration-300 hover:bg-white/20 hover:text-[#F5D7B7] hover:scale-105 ${
+                    pathname === item.href ? "bg-white/25 font-bold text-[#F5D7B7] shadow-lg" : ""
                   }`}
                 >
-                  <Link href={item.href}>{item.label}</Link>
+                  <Link href={item.href}>
+                    {item.label}
+                  </Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
             ))}
-
-            {/* Dropdown Example */}
-            {/* <NavigationMenuItem>
-              <DropdownMenu>
-                <DropdownMenuTrigger className="text-white flex items-center gap-1">
-                  SẢN PHẨM <span>▼</span>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem asChild>
-                    <Link href="/products/product-1">Sản phẩm 1</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/products/product-2">Sản phẩm 2</Link>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </NavigationMenuItem> */}
           </NavigationMenuList>
         </NavigationMenu>
       </div>
 
       {/* Right: Search, Hotline, Cart, Avatar */}
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-3 lg:gap-6">
         <Button
           variant="ghost"
           size="icon"
-          className="rounded-full bg-white"
+          className="rounded-full bg-white hover:bg-[#F5D7B7] transition-all duration-300 hover:scale-110 shadow-md group"
         >
-          <Image
-            src="/search-icon.svg"
-            alt="Tìm kiếm"
-            width={24}
-            height={24}
-            className="h-6 w-6"
-          />
+          <Search size={20} className="text-[#7B4F35] group-hover:text-[#6B3F25]" />
         </Button>
 
-        <div className="flex items-center gap-2">
-          <Image
-            src="/pet-icon.png"
-            alt="Pet"
-            width={32}
-            height={32}
-            className="h-8 w-8"
+        <div className="hidden md:flex items-center gap-3">
+          <Image 
+            src="/assets/icon/phucyen.png" 
+            alt="Phone Icon" 
+            width={24} 
+            height={24} 
+            className="object-contain"
           />
-          <div className="text-white text-sm">
-            Hotline:
-            <br />
-            <span className="font-bold text-base">123 456 78 90</span>
+          <div className="text-white">
+            <div className="text-white font-medium text-sm">Hotline:</div>
+            <div className="font-bold text-base">092 532 37 37</div>
           </div>
         </div>
 
         <Button
           variant="ghost"
           size="icon"
-          className="bg-[#C46C2B] rounded-full"
+          className="bg-[#A0694B] hover:bg-[#8B5A3C] rounded-full transition-all duration-300 hover:scale-110 shadow-lg relative group"
         >
-          <Image
-            src="/cart-icon.svg"
-            alt="Giỏ hàng"
-            width={24}
-            height={24}
-            className="h-6 w-6"
-          />
+          <ShoppingCart size={20} className="text-white" />
+          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+            3
+          </span>
         </Button>
 
-        <Avatar>
+        <Avatar className="transition-transform duration-300 hover:scale-110 ring-2 ring-white/30 hover:ring-white/50">
           <AvatarImage src="/avatar.jpg" alt="Avatar" />
-          <AvatarFallback>U</AvatarFallback>
+          <AvatarFallback className="bg-[#F5D7B7] text-[#7B4F35] font-bold">U</AvatarFallback>
         </Avatar>
+
+        {/* Mobile menu button */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="lg:hidden text-white hover:bg-white/20 transition-all duration-300 rounded-xl"
+        >
+          <Menu size={24} />
+        </Button>
       </div>
     </header>
   );
