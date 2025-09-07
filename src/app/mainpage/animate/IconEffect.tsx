@@ -2,27 +2,31 @@
 
 import { useEffect } from "react";
 import gsap from "gsap";
+import Image from "next/image";
 import styles from "./IconEffect.module.css";
+
 export default function IconEffect() {
   useEffect(() => {
+
     let oldX = 0,
       oldY = 0,
       deltaX = 0,
       deltaY = 0;
 
-    const root = document.querySelector(".mwg_effect000");
+    const root = document.querySelector(`.${styles.mwg_effect000}`);
     if (!root) return;
 
-    const handleMove = (e: MouseEvent) => {
-      deltaX = e.clientX - oldX;
-      deltaY = e.clientY - oldY;
-      oldX = e.clientX;
-      oldY = e.clientY;
+    const handleMove = (e: Event) => {
+      const mouseEvent = e as MouseEvent;
+      deltaX = mouseEvent.clientX - oldX;
+      deltaY = mouseEvent.clientY - oldY;
+      oldX = mouseEvent.clientX;
+      oldY = mouseEvent.clientY;
     };
 
     root.addEventListener("mousemove", handleMove);
 
-    root.querySelectorAll(".media").forEach((el) => {
+    root.querySelectorAll(`.${styles.media}`).forEach((el) => {
       el.addEventListener("mouseenter", () => {
         const tl = gsap.timeline({
           onComplete: () => {
@@ -39,7 +43,12 @@ export default function IconEffect() {
           y: deltaY * 2,
           duration: 0.3,
           ease: "power2.out",
-        }).to(image, { x: 0, y: 0, duration: 0.5, ease: "power2.inOut" });
+        }).to(image, { 
+          x: 0, 
+          y: 0, 
+          duration: 0.5, 
+          ease: "power2.inOut" 
+        });
 
         tl.fromTo(
           image,
@@ -62,26 +71,31 @@ export default function IconEffect() {
   }, []);
 
   return (
-    <section className="mwg_effect000">
-      <div className="header">
-        <div>
-          <p className="button button1">
-            <img src="/assets/medias/01.png" alt="" />
-            <span>3d & stuff</span>
-          </p>
-        </div>
-        <div>12 items saved in your collection</div>
-        <div>
-          <p className="button button2">Add more</p>
-        </div>
-      </div>
+    <section className={styles.mwg_effect000}>
+    
 
-      <div className="medias">
-        {Array.from({ length: 12 }, (_, i) => (
-          <div className="media" key={i}>
-            <img
-              src={`/assets/iconAnimate/${String(i + 1).padStart(2, "0")}.gif`}
-              alt=""
+      <div className={styles.medias}>
+        {[
+          "cat.gif",
+          "clinic.gif",
+          "dog.gif",
+          "paw-print.gif",
+          "pet-care.gif",
+          "pet-love.gif",
+          "veterinary.gif",
+          "cat.gif",
+          "dog.gif",
+          "clinic.gif",
+          "pet-care.gif",
+          "paw-print.gif"
+        ].map((filename, i) => (
+          <div className={styles.media} key={i}>
+            <Image
+              src={`/assets/iconAnimate/${filename}`}
+              alt={filename.replace('.gif', '')}
+              width={200}
+              height={200}
+              unoptimized
             />
           </div>
         ))}
