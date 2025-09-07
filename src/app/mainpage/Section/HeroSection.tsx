@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
+import IconEffect from "../animate/IconEffect"
 
 export default function HeroSection() {
   return (
@@ -9,8 +10,11 @@ export default function HeroSection() {
         <p className="text-[#7B4F35] mb-4">Nâng niu thú cưng – Trao trọn yêu thương từ ngôi nhà bạn!</p>
         <Button className="bg-[#7B4F35] text-white rounded-full px-6 py-2">Xem Thêm...</Button>
       </div>
+      <div>
+        <IconEffect />
+      </div>
       <div className="flex items-center gap-4">
-        <Image src="/assets/imgs/imgStore/img9788-8720.jpg" alt="Hero" width={300} height={200} className="rounded-xl" />
+        <Image src="/assets/icon/dog3.png" alt="Hero" width={300} height={200} className="rounded-xl" />
       </div>
     </section>
   )

@@ -1,0 +1,20 @@
+/* GridAnimation.module.css */
+body {
+    display: grid;
+    justify-content: center;
+    align-content: center;
+    background-color: #0e100f;
+    height: 100svh;
+    margin: 0;
+    overflow: hidden;
+    user-select: none;
+  }
+  
+  .grid {
+    --gap: 12px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--gap);
+  }
+  
