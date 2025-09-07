@@ -1,20 +1,97 @@
-/* GridAnimation.module.css */
-body {
-    display: grid;
-    justify-content: center;
-    align-content: center;
-    background-color: #0e100f;
-    height: 100svh;
-    margin: 0;
+/* IconEffect.module.css */
+.mwg_effect000 {
+    height: 100vh;
     overflow: hidden;
-    user-select: none;
-  }
-  
-  .grid {
-    --gap: 12px;
+    position: relative;
+    display: grid;
+    place-items: center;
+}
+
+.mwg_effect000 .header {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    border-bottom: 1px solid #323232;
+    padding: 20px 25px;
+    color: #BAB8B9;
+}
+
+.mwg_effect000 .header div:nth-child(2) {
+    font-size: 26px;
+}
+
+.mwg_effect000 .header div:last-child {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: var(--gap);
-  }
-  
+    justify-content: flex-end;
+}
+
+.button {
+    font-size: 14px;
+    text-transform: uppercase;
+    border-radius: 24px;
+    height: 48px;
+    gap: 5px;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    width: max-content;
+    border: none;
+    cursor: pointer;
+    color: inherit;
+    background: none;
+}
+
+.button1 {
+    background-color: #232323;
+}
+
+.button2 {
+    border: 1px solid #323232;
+}
+
+.button img {
+    width: 22px;
+    height: auto;
+    display: block;
+}
+
+.medias {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1vw;
+}
+
+.medias img {
+    width: 11vw;
+    height: 11vw;
+    object-fit: contain;
+    border-radius: 4%;
+    display: block;
+    pointer-events: none;
+    will-change: transform;
+}
+
+@media (max-width: 768px) {
+    .mwg_effect000 .header {
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+    }
+    
+    .mwg_effect000 .header div:nth-child(2) {
+        display: none;
+    }
+    
+    .medias {
+        gap: 2vw;
+    }
+    
+    .medias img {
+        width: 18vw;
+        height: 18vw;
+    }
+}
