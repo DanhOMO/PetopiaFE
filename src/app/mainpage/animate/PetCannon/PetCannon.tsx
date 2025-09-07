@@ -375,32 +375,14 @@ export default function PetCannon() {
   return (
     <div 
       ref={containerRef} 
-        style={{ 
-        width: "400px", 
-        height: "300px", 
-        overflow: "visible", 
-        position: "relative",
-        background: "linear-gradient(135deg, #F5D7B7, #E6C7A3)",
-        borderRadius: "20px",
-        border: "3px solid #7B4F35",
-        boxShadow: "0 4px 15px rgba(123, 79, 53, 0.3)",
-      }}
+      className="w-[400px] h-[300px] overflow-visible relative bg-gradient-to-br from-[#F5D7B7] to-[#E6C7A3] rounded-[20px] border-[3px] border-[#7B4F35] shadow-[0_4px_15px_rgba(123,79,53,0.3)]"
     >
       {/* Pet Love cursor */}
       <img 
         ref={handRef}
-        className="pet-cannon__hand"
+        className="pet-cannon__hand absolute w-[50px] h-[50px] opacity-0 pointer-events-none z-20 -translate-x-1/2 -translate-y-1/2"
         src="/assets/iconAnimate/pet-love.gif"
         alt="Pet Love"
-        style={{
-          position: "absolute",
-          width: "50px",
-          height: "50px",
-          opacity: 0,
-          pointerEvents: "none",
-          zIndex: 20,
-          transform: "translate(-50%, -50%)",
-        }}
       />
 
 
@@ -409,73 +391,26 @@ export default function PetCannon() {
       {/* SVG Canvas for drawing */}
       <svg 
         ref={svgRef}
-        className="pet-cannon__canvas"
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          pointerEvents: "none",
-          zIndex: 5,
-        }}
+        className="pet-cannon__canvas absolute top-0 left-0 w-full h-full pointer-events-none z-[5]"
       />
 
       {/* Proxy for interaction */}
       <div 
-        className="pet-cannon__proxy"
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          zIndex: 15,
-        }}
+        className="pet-cannon__proxy absolute top-0 left-0 w-full h-full z-[15]"
       />
 
       {/* Instructions */}
       <div 
-        className="pet-cannon__instructions"
+        className="pet-cannon__instructions absolute bottom-[10px] left-1/2 -translate-x-1/2 text-[#7B4F35] text-xs font-bold text-center z-[16] max-w-[90%]"
         style={{
-          position: "absolute",
-          bottom: "10px",
-          left: "50%",
-          transform: "translateX(-50%)",
-          color: "#7B4F35",
-          fontSize: "12px",
-          fontWeight: "bold",
-          textAlign: "center",
           textShadow: "1px 1px 2px rgba(255,255,255,0.8)",
-          zIndex: 16,
-          maxWidth: "90%",
-        }}
-      >
-        Nhấn và Kéo để bắn thú cưng!
-      </div>
-
-      {/* Instructions */}
-      <div 
-        className="pet-cannon__instructions"
-        style={{
-          position: "absolute",
-          bottom: "10px",
-          left: "50%",
-          transform: "translateX(-50%)",
-          color: "#7B4F35",
-          fontSize: "12px",
-          fontWeight: "bold",
-          textAlign: "center",
-          textShadow: "1px 1px 2px rgba(255,255,255,0.8)",
-          zIndex: 16,
-          maxWidth: "90%",
         }}
       >
         Nhấn và Kéo để bắn thú cưng!
       </div>
 
       {/* Preload images for slingshot projectiles */}
-      <div className="image-preload" style={{ display: "none" }}>
+      <div className="image-preload hidden">
         <img src="/assets/icon/dog1.png" data-key="dog1" alt="" />
         <img src="/assets/icon/dog2.png" data-key="dog2" alt="" />
         <img src="/assets/icon/cat1.png" data-key="cat1" alt="" />
@@ -483,11 +418,11 @@ export default function PetCannon() {
       </div>
 
       {/* Preload images for explosion */}
-      <div className="explosion-preload" style={{ display: "none" }}>
+      <div className="explosion-preload hidden">
         <img src="/assets/icon/dog3.png" data-key="dog3" alt="" />
         <img src="/assets/icon/dog4.png" data-key="dog4" alt="" />
         <img src="/assets/icon/cat3.png" data-key="cat3" alt="" />
-        <img src="/assets/icon/dog5" data-key="pet1" alt="" />
+        <img src="/assets/icon/dog5.png" data-key="pet1" alt="" />
       </div>
     </div>
   );
