@@ -1,7 +1,8 @@
-import { Card, CardContent } from "@/components/ui/card"
+import { Card } from "@/components/ui/card"
 import Image from "next/image"
 import { trpc } from "@/utils/trpc"
-import {Loading} from  "../../components/Loading"
+import {Loading} from  "../../components/loading"
+import { Heart, Search, ShoppingCart } from "lucide-react"
 
 export default function petsection() {
     const { data: pets, isLoading, error } = trpc.pet.getAll.useQuery();
@@ -41,6 +42,45 @@ export default function petsection() {
                   />
                   {/* Gradient Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+                  
+                {/* Hover Overlay với icons */}
+<div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center -mt-25">
+  <div className="flex gap-4">
+    {/* Heart Icon */}
+    <div className="relative group/heart cursor-pointer p-2">
+      <div className="w-16 h-16 bg-white/90 group-hover/heart:bg-white rounded-full flex items-center justify-center shadow-lg transform group-hover/heart:scale-110 transition-all duration-300">
+        <Heart className="w-6 h-6 text-[#7B4F35] group-hover/heart:fill-[#7B4F35] transition-colors duration-300" />
+      </div>
+      {/* Tooltip */}
+      <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-pink-500 text-white px-3 py-1 rounded text-xs opacity-0 group-hover/heart:opacity-100 transition-opacity duration-300 whitespace-nowrap z-50 pointer-events-none">
+        Yêu thích
+      </div>
+    </div>
+
+    {/* Search Icon */}
+    <div className="relative group/search cursor-pointer p-2">
+      <div className="w-16 h-16 bg-white/90 group-hover/search:bg-white rounded-full flex items-center justify-center shadow-lg transform group-hover/search:scale-110 transition-all duration-300">
+        <Search className="w-6 h-6 text-[#7B4F35] group-hover/search:fill-[#7B4F35] transition-colors duration-300" />
+      </div>
+      {/* Tooltip */}
+      <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-pink-500 text-white px-3 py-1 rounded text-xs opacity-0 group-hover/search:opacity-100 transition-opacity duration-300 whitespace-nowrap z-50 pointer-events-none">
+        Xem chi tiết
+      </div>
+    </div>
+
+    {/* Cart Icon */}
+    <div className="relative group/cart cursor-pointer p-2">
+      <div className="w-16 h-16 bg-white/90 group-hover/cart:bg-white rounded-full flex items-center justify-center shadow-lg transform group-hover/cart:scale-110 transition-all duration-300">
+        <ShoppingCart className="w-6 h-6 text-[#7B4F35] group-hover/cart:fill-[#7B4F35] transition-colors duration-300" />
+      </div>
+      {/* Tooltip */}
+      <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-pink-500 text-white px-3 py-1 rounded text-xs opacity-0 group-hover/cart:opacity-100 transition-opacity duration-300 whitespace-nowrap z-50 pointer-events-none">
+        Thêm giỏ hàng
+      </div>
+    </div>
+  </div>
+</div>
+
                 </div>
                 
                 {/* Discount Badge */}
@@ -69,9 +109,9 @@ export default function petsection() {
                     Mô tả
                   </p>
                   
-                  <button className="w-full bg-[#7B4F35] hover:bg-[#6B3F25] text-white py-2 px-4 rounded-lg transition-colors duration-300 font-semibold flex items-center justify-center gap-2">
-                    Thêm vào giỏ hàng
-                    <span className="text-sm">🐾</span>
+                  <button className="w-full bg-gradient-to-r from-[#7B4F35] to-[#6B3F25] hover:from-[#6B3F25] hover:to-[#5B2F15] text-white py-3 px-4 rounded-lg transition-all duration-300 font-bold text-lg shadow-lg transform hover:scale-105 flex items-center justify-center gap-2">
+                    MUA NGAY
+                    <span className="text-lg">›</span>
                   </button>
                 </div>
               </Card>

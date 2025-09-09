@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import {
   Observer,
@@ -21,6 +21,34 @@ export default function PetCannon() {
   const containerRef = useRef<HTMLDivElement>(null);
   const handRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
+  const [showBackground, setShowBackground] = useState(true);
+  const [showInstructions, setShowInstructions] = useState(true);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const hideBackgroundAndInstructions = () => {
+    setShowBackground(false);
+    setShowInstructions(false);
+    
+    // Clear existing timeout
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    
+    // Set timeout to show again after 5 seconds
+    timeoutRef.current = setTimeout(() => {
+      setShowBackground(true);
+      setShowInstructions(true);
+    }, 5000);
+  };
+
+  useEffect(() => {
+    // Cleanup timeout on unmount
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     class PetSlingshot {
@@ -105,6 +133,9 @@ export default function PetCannon() {
           const x = e.clientX - rect.left;
           const y = e.clientY - rect.top;
           this.createExplosion(x, y, 300);
+          
+          // Call the hide function from parent component
+          hideBackgroundAndInstructions();
         });
       }
 
@@ -155,6 +186,7 @@ export default function PetCannon() {
             type: "touch",
             onPress: (e: any) => {
               this.createExplosion(e.x, e.y, 400);
+              hideBackgroundAndInstructions();
             }
           });
         } else {
@@ -177,6 +209,9 @@ export default function PetCannon() {
         if (this.el.instructions) {
           gsap.set(this.el.instructions, { opacity: 0 });
         }
+        
+        // Hide background and instructions when starting to draw
+        hideBackgroundAndInstructions();
 
         // Sử dụng tọa độ từ event trực tiếp (như code mẫu)
         const rect = this.hero.getBoundingClientRect();
@@ -375,8 +410,8 @@ export default function PetCannon() {
   return (
     <div 
       ref={containerRef} 
-      className="w-[400px] h-[300px] overflow-visible relative bg-gradient-to-br from-[#F5D7B7] to-[#E6C7A3] rounded-[20px] border-[3px] border-[#7B4F35] shadow-[0_4px_15px_rgba(123,79,53,0.3)]"
-    >
+      className={`w-[400px] ${showBackground ? "bg-[url('/assets/iconAnimate/cat-playing.gif')] bg-no-repeat bg-center bg-cover" : ""} h-[300px] overflow-visible relative rounded-[20px] border-[3px] border-[#7B4F35] shadow-[0_4px_15px_rgba(123,79,53,0.3)] transition-all duration-300`}
+      >
       {/* Pet Love cursor */}
       <img 
         ref={handRef}
@@ -400,14 +435,16 @@ export default function PetCannon() {
       />
 
       {/* Instructions */}
-      <div 
-        className="pet-cannon__instructions absolute bottom-[10px] left-1/2 -translate-x-1/2 text-[#7B4F35] text-xs font-bold text-center z-[16] max-w-[90%]"
-        style={{
-          textShadow: "1px 1px 2px rgba(255,255,255,0.8)",
-        }}
-      >
-        Nhấn và Kéo để bắn thú cưng!
-      </div>
+      {showInstructions && (
+        <div 
+          className="pet-cannon__instructions absolute bottom-[5px] left-1/2 -translate-x-1/2 text-white text-xs font-bold text-center z-[16] max-w-[90%] transition-opacity duration-300"
+          style={{
+            textShadow: "1px 1px 2px rgba(255,255,255,0.8)",
+          }}
+        >
+          Nhấn và Kéo để bắn thú cưng!
+        </div>
+      )}
 
       {/* Preload images for slingshot projectiles */}
       <div className="image-preload hidden">

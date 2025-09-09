@@ -36,9 +36,9 @@ export default function AboutSection() {
         ))}
       </div>
       {/* Decor Images */}
-      <Image src="/assets/icon/cat1.png" alt="Cat Decor" width={80} height={80} className="absolute top-8 left-0" />
-      <Image src="/assets/icon/cat2.png" alt="Cat Decor" width={100} height={100} className="absolute top-8 right-0" />
-      <Image src="/assets/icon/cat3.png" alt="Cat Decor" width={100} height={100} className="absolute bottom-8 right-0" />
+      <Image src="/assets/icon/cat1.png" alt="Cat Decor" width={200} height={200} className="absolute top-8 left-0" />
+      <Image src="/assets/icon/cat2.png" alt="Cat Decor" width={200} height={200} className="absolute top-8 right-4" />
+      <Image src="/assets/icon/cat3.png" alt="Cat Decor" width={100} height={100} className="absolute bottom-8 right-4" />
     </section>
   )
 }
