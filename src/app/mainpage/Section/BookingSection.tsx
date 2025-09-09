@@ -46,6 +46,13 @@ export default function BookingSection() {
 
   return (
     <section className="relative bg-[#F5D7B7] py-10 px-4 flex flex-col items-center">
+       <Image
+        src="/assets/iconAnimate/dog.gif"
+        alt="Dog Icon"
+        width={300}
+        height={300}
+        className="absolute top-10 left-5 md:left-12 z-0"
+      />
       <h2 className="text-[#7B4F35] text-3xl font-bold mb-6 text-center">
         Đặt Lịch Ngay
         <span className="block h-1 w-32 bg-[#7B4F35] mx-auto mt-2 rounded"></span>
@@ -102,13 +109,13 @@ export default function BookingSection() {
           Đặt lịch ngay
         </Button>
       </form>
-      <Image
-        src="/assets/icon/dog4.png"
-        alt="Cat Icon"
-        width={120}
-        height={120}
-        className="absolute top-4 right-0 md:right-12 z-0"
-      />
+       <Image
+         src="/assets/icon/dog4.png"
+         alt="Dog Icon"
+         width={200}
+         height={200}
+         className="absolute top-4 right-0 md:right-12 z-0"
+       />
     </section>
   )
 }
