@@ -1,9 +1,7 @@
 import { z } from "zod";
 import { router, publicProcedure } from "../trpc";
 
-export const petRouter = router({
-  getAll: publicProcedure.query(() => {
-    return [
+const pets = [
       {
         pet_id: "P001",
         name: "Milo",
@@ -180,6 +178,17 @@ export const petRouter = router({
         image_url: "/assets/imgs/imgStore/img2079-7798.jpeg",
       },
     ];
+
+export const petRouter = router({
+  getById: publicProcedure
+    .input(z.object({ pet_id: z.string() }))
+    .query(({ input }) => {
+      const { pet_id } = input;
+      return pets.find((pet) => pet.pet_id === pet_id) || null;
+    }),
+
+  getAll: publicProcedure.query(() => {
+    return pets;
   }),
 
   create: publicProcedure

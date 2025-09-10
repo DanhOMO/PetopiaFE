@@ -6,12 +6,18 @@ import { trpc } from "../../utils/trpc";
 import Image from "next/image";
 import Link from "next/link";
 import {Loading} from "../components/loading";
+
+import { useCart } from "../hooks/useCart";
+
+
 import { Heart, Search, ShoppingCart } from "lucide-react"
+
 export default function PetsPage() {
   const pageSize = 9;
   const [page, setPage] = React.useState(1);
   const { data: pets, isLoading, error } = trpc.pet.getAll.useQuery();
   const { data: petImgs } = trpc.petImg.getAll.useQuery();
+  const { addToCart } = useCart();
 
   if (isLoading) return  <Loading />;
   if (error) return <div className="text-center py-10 text-red-500">Lỗi: {error.message}</div>;
@@ -115,9 +121,11 @@ export default function PetsPage() {
                     <span className="text-lg">›</span>
                   </button>
                 </div>
+
               </Card>
             </div>
           ))}
+
       </div>
       {/* Pagination */}
       {totalPages > 1 && (

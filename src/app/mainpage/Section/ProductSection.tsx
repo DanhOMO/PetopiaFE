@@ -1,20 +1,30 @@
-import { Card } from "@/components/ui/card"
+
+"use client";
+import { Card, CardContent } from "@/components/ui/card"
+
 import Image from "next/image"
+import Link from "next/link"
 import { trpc } from "@/utils/trpc"
-import {Loading} from  "../../components/loading"
+
+import { Loading } from "../../components/loading"
+import { useCart } from "../../hooks/useCart"
+
 import { Heart, Search, ShoppingCart } from "lucide-react"
 
-export default function petsection() {
-    const { data: pets, isLoading, error } = trpc.pet.getAll.useQuery();
+
+export default function ProductSection() {
+  const { data: pets, isLoading, error } = trpc.pet.getAll.useQuery();
   const { data: petImgs } = trpc.petImg.getAll.useQuery();
+  const { addToCart } = useCart();
+
+  const getThumbnail = (pet_id: string) => {
+    const img = petImgs?.find((img) => img.pet_id === pet_id && img.is_thumbnail);
+    return img?.image_url || "/imgs/imgPet/animal-8165466_1280.jpg";
+  };
   if (isLoading) return <Loading />;
   if (error) return <div className="text-center py-10 text-red-500">Lỗi: {error.message}</div>;
-   // Lấy thumbnail cho từng pet
-    const getThumbnail = (pet_id: string) => {
-      const img = petImgs?.find((img) => img.pet_id === pet_id && img.is_thumbnail);
-      return img?.image_url || "/imgs/imgPet/animal-8165466_1280.jpg";
-    };
-  if (!pets) return null;
+
+
   return (
     <section className="bg-[#F5D7B7] py-10 px-4 flex flex-col items-center relative">
       {/* Title */}
@@ -25,10 +35,10 @@ export default function petsection() {
           </span>
         </div>
       </div>
-      
       {/* pets Grid with max width like ServiceSection */}
       <div className="w-full max-w-6xl">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
+
           {pets.map((pet) => (
             <div key={pet.pet_id} className="relative group cursor-pointer">
               <Card className="relative h-80 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 border-0">
@@ -117,6 +127,7 @@ export default function petsection() {
               </Card>
             </div>
           ))}
+
         </div>
       </div>
       {/* Pagination */}
@@ -137,5 +148,6 @@ export default function petsection() {
         </button>
       </div>
     </section>
-  )
+  );
 }
+       
