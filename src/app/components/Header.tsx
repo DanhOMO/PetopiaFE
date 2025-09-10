@@ -29,6 +29,8 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useCart } from "../hooks/useCart";
+import { Item } from "@radix-ui/react-navigation-menu";
 
 const navItems = [
   { href: "/", label: "TRANG CHỦ" },
@@ -37,11 +39,12 @@ const navItems = [
   { href: "/news", label: "TIN TỨC" },
   { href: "/contacts", label: "LIÊN HỆ" },
   { href: "/abouts", label: "GIỚI THIỆU" },
+  
 ];
 
 export default function Header() {
   const pathname = usePathname();
-
+  const { getTotalQuantity } = useCart();
   return (
     <header className="w-full bg-[#7B4F35] flex items-center justify-between px-4 lg:px-8 py-4 backdrop-blur-sm transition-all duration-300">
       {/* Left: Logo & Navigation */}
@@ -102,16 +105,18 @@ export default function Header() {
           </div>
         </div>
 
-        <Button
-          variant="ghost"
-          size="icon"
-          className="bg-[#A0694B] hover:bg-[#8B5A3C] rounded-full transition-all duration-300 hover:scale-110 shadow-lg relative group"
-        >
-          <ShoppingCart size={20} className="text-white" />
-          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
-            3
-          </span>
-        </Button>
+        <Link href="/carts" className="relative">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="bg-[#A0694B] hover:bg-[#8B5A3C] rounded-full transition-all duration-300 hover:scale-110 shadow-lg relative group"
+          >
+            <ShoppingCart size={20} className="text-white" />
+            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+              {getTotalQuantity()}
+            </span>
+          </Button>
+        </Link>
 
         <Avatar className="transition-transform duration-300 hover:scale-110 ring-2 ring-white/30 hover:ring-white/50">
           <AvatarImage src="/avatar.jpg" alt="Avatar" />

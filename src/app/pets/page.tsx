@@ -6,12 +6,14 @@ import { trpc } from "../../utils/trpc";
 import Image from "next/image";
 import Link from "next/link";
 import {Loading} from "../components/loading";
+import { useCart } from "../hooks/useCart";
 
 export default function PetsPage() {
   const pageSize = 9;
   const [page, setPage] = React.useState(1);
   const { data: pets, isLoading, error } = trpc.pet.getAll.useQuery();
   const { data: petImgs } = trpc.petImg.getAll.useQuery();
+  const { addToCart } = useCart();
 
   if (isLoading) return  <Loading />;
   if (error) return <div className="text-center py-10 text-red-500">Lỗi: {error.message}</div>;
@@ -66,7 +68,18 @@ export default function PetsPage() {
                 </div>
                 <p className="text-gray-200 text-sm mb-3 line-clamp-2">{pet.description}</p>
                 <div className="flex gap-2">
-                  <Button className="w-full bg-[#7B4F35] hover:bg-[#6B3F25] text-white font-semibold flex items-center justify-center gap-2">
+                  <Button
+                    className="w-full bg-[#7B4F35] hover:bg-[#6B3F25] text-white font-semibold flex items-center justify-center gap-2"
+                    onClick={() =>
+                      addToCart({
+                        id: pet.pet_id,
+                        name: pet.name,
+                        price: pet.discount_price || pet.price,
+                        quantity: 1,
+                        image: getThumbnail(pet.pet_id),
+                      })
+                    }
+                  >
                     Thêm vào giỏ hàng <span className="text-sm">🐾</span>
                   </Button>
                   <Link href={`/pets/${pet.pet_id}`} className="w-full">

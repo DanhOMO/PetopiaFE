@@ -2,6 +2,7 @@ import { z } from "zod";
 import { router, publicProcedure } from "../trpc";
 
 export const articleRouter = router({
+  
   getAll: publicProcedure.query(() => {
     return [
       {
