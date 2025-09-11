@@ -1,7 +1,17 @@
 import { z } from "zod";
 import { router, publicProcedure } from "../trpc";
+export type Service = {
+  serviceId: string; // PK
+  name: string; // NOT NULL
+  description: string; // NOT NULL
+  price: number; // NOT NULL
+  img_url?: string; // URL hình ảnh dịch vụ
+  createdAt: string; // DATETIME -> ISO string
+  updatedAt: string; // DATETIME -> ISO string
+};
 
 export const serviceRouter = router({
+  
   getAll: publicProcedure.query(() => {
     return [
       {

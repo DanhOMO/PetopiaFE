@@ -29,7 +29,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useCart } from "../hooks/useCart";
+import { useCart } from "@/hooks/useCart";
 import { Item } from "@radix-ui/react-navigation-menu";
 
 const navItems = [
@@ -44,7 +44,7 @@ const navItems = [
 
 export default function Header() {
   const pathname = usePathname();
-  const { getTotalQuantity } = useCart();
+  const { getTotalQuantity, totalQuantity } = useCart();
   return (
     <header className="w-full bg-[#7B4F35] flex items-center justify-between px-4 lg:px-8 py-4 backdrop-blur-sm transition-all duration-300">
       {/* Left: Logo & Navigation */}
@@ -132,6 +132,5 @@ export default function Header() {
           <Menu size={24} />
         </Button>
       </div>
-    </header>
-  );
+    </header>);
 }
