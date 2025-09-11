@@ -1,5 +1,36 @@
 import { z } from "zod";
 import { router, publicProcedure } from "../trpc";
+export type Pet = {
+  pet_id: string; // PK
+  name: string; // NOT NULL
+  description?: string | null;
+  category_id?: string | null;
+
+  age?: number | null;
+
+  gender: "MALE" | "FEMALE" | "UNKNOWN"; // DEFAULT 'UNKNOWN'
+
+  price: number; // NOT NULL
+  discount_price?: number | null;
+
+  health_status?: string | null;
+  vaccination_history?: string | null;
+
+  stock_quantity?: number | null; // DEFAULT 1
+
+  status: "AVAILABLE" | "SOLD" | "RESERVED" | "DRAFT"; // DEFAULT 'DRAFT'
+
+  video_url?: string | null;
+
+  weight?: number | null;
+  height?: number | null;
+  color?: string | null;
+
+  fur_type: "SHORT" | "LONG" | "CURLY" | "NONE" | "OTHER"; // DEFAULT 'OTHER'
+
+  created_at?: string; // DATETIME -> ISO string
+  updated_at?: string; // DATETIME -> ISO string
+};
 
 const pets = [
       {

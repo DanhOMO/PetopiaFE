@@ -6,10 +6,10 @@ import { trpc } from "../../utils/trpc";
 import Image from "next/image";
 import Link from "next/link";
 import {Loading} from "../components/loading";
+import { PetDetailModal } from "@/app/components/PetDetailModal";
+import { useCart } from "@/hooks/useCart";
 
-import { useCart } from "../hooks/useCart";
-
-
+import type { Pet } from "@/types/Pet"
 import { Heart, Search, ShoppingCart } from "lucide-react"
 
 export default function PetsPage() {
@@ -18,6 +18,16 @@ export default function PetsPage() {
   const { data: pets, isLoading, error } = trpc.pet.getAll.useQuery();
   const { data: petImgs } = trpc.petImg.getAll.useQuery();
   const { addToCart } = useCart();
+
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [selectedPetId, setSelectedPetId] = React.useState<string | null>(null);
+  // dung PetDetaiModal
+  const handleOpenModal = (petId: string) => {
+    setSelectedPetId(petId);
+    setIsModalOpen(true);
+
+  };
+
 
   if (isLoading) return  <Loading />;
   if (error) return <div className="text-center py-10 text-red-500">Lỗi: {error.message}</div>;
@@ -65,18 +75,24 @@ export default function PetsPage() {
     </div>
 
     {/* Search Icon */}
-    <div className="relative group/search cursor-pointer p-2">
+    <div className="relative group/search cursor-pointer p-2"
+    onClick={() => handleOpenModal(pet.pet_id)}>
       <div className="w-16 h-16 bg-white/90 group-hover/search:bg-white rounded-full flex items-center justify-center shadow-lg transform group-hover/search:scale-110 transition-all duration-300">
         <Search className="w-6 h-6 text-[#7B4F35] group-hover/search:fill-[#7B4F35] transition-colors duration-300" />
       </div>
       {/* Tooltip */}
-      <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-pink-500 text-white px-3 py-1 rounded text-xs opacity-0 group-hover/search:opacity-100 transition-opacity duration-300 whitespace-nowrap z-50 pointer-events-none">
+      <div
+      className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-pink-500 text-white px-3 py-1 rounded text-xs opacity-0 group-hover/search:opacity-100 transition-opacity duration-300 whitespace-nowrap z-50 pointer-events-none"
+        
+      >
         Xem chi tiết
       </div>
     </div>
 
     {/* Cart Icon */}
-    <div className="relative group/cart cursor-pointer p-2">
+    <div className="relative group/cart cursor-pointer p-2"
+    onClick={() => addToCart({ pet: pet as Pet, quantity: 1, img: getThumbnail(pet.pet_id) })}
+    >
       <div className="w-16 h-16 bg-white/90 group-hover/cart:bg-white rounded-full flex items-center justify-center shadow-lg transform group-hover/cart:scale-110 transition-all duration-300">
         <ShoppingCart className="w-6 h-6 text-[#7B4F35] group-hover/cart:fill-[#7B4F35] transition-colors duration-300" />
       </div>
@@ -155,6 +171,11 @@ export default function PetsPage() {
           </button>
         </div>
       )}
+      <PetDetailModal
+        open={isModalOpen}
+        petId={selectedPetId || ""}
+        onOpenChange={(open) => setIsModalOpen(open)}
+      />
     </div>
   );
 }

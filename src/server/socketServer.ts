@@ -1,12 +1,20 @@
 // server/socketServer.js
 import { Server } from "socket.io";
-const io = new Server(3001, { cors: { origin: "*" } });
+import { CartItem } from "@/types/Cart";
+const io = new Server(3000, { cors: { origin: "*" } });
 
 io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
 
-  socket.on("message", (data) => {
-    io.emit("message", data); 
+  // Lắng nghe giỏ hàng từ client
+  socket.on("cart:update", (cart) => {
+    console.log("Cart received:", cart);
+
+    // Tính tổng số lượng
+    const total = cart.reduce((sum : number, item : CartItem ) => sum + item.quantity, 0);
+
+    // Gửi lại cho tất cả client
+    io.emit("cart:totalQuantity", total);
   });
 
   socket.on("disconnect", () => {

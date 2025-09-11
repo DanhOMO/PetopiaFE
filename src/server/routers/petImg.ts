@@ -1,5 +1,12 @@
 import { z } from "zod";
 import { router, publicProcedure } from "../trpc";
+export type PetImg = {
+  image_id: string; // PK
+  pet_id: string; // FK -> Pet
+  image_url: string; // NOT NULL
+  is_thumbnail: boolean; // DEFAULT false
+  created_at: string; // DATETIME -> ISO string
+};
 
 export const petImgRouter = router({
   getAll: publicProcedure.query(() => {
