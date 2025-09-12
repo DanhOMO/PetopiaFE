@@ -5,13 +5,15 @@ import { Button } from "@/components/ui/button";
 import { trpc } from "../../utils/trpc";
 import Link from "next/link";
 import Image from "next/image";
-
-
+import { ServiceDetailModal } from "@/app/components/ServiceDetailModal";
+import type { Service } from "@/types/Service";
 export default function ServicesPage() {
   // Phân trang: mỗi trang 6 dịch vụ
   const pageSize = 6;
   const [page, setPage] = React.useState(1);
   const { data: services, isLoading, error } = trpc.service.getAll.useQuery();
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [selectedServiceId, setSelectedServiceId] = React.useState<Service | null>(null);
 
   if (isLoading) return <div className="text-center py-10">Đang tải...</div>;
   if (error) return <div className="text-center py-10 text-red-500">Lỗi: {error.message}</div>;
@@ -19,7 +21,10 @@ export default function ServicesPage() {
   const total = services?.length || 0;
   const totalPages = Math.ceil(total / pageSize);
   const pagedServices = services?.slice((page - 1) * pageSize, page * pageSize) || [];
-
+  const handleOpenModal = (service: Service) => {
+    setSelectedServiceId(service);
+    setIsModalOpen(true);
+  };
   return (
     <div className="max-w-5xl mx-auto py-10">
       <h1 className="text-3xl font-bold mb-8 text-center">Dịch vụ của Petopia</h1>
@@ -47,9 +52,11 @@ export default function ServicesPage() {
                 {service.price.toLocaleString()}₫
               </div>
               <Button className="w-full bg-[#C46C2B] text-white mt-2">Đặt lịch</Button>
-              <Link href={`/services/${service.serviceId}`} className="w-full mt-2">
+              <div  className="w-full mt-2"
+              onClick={() => handleOpenModal(service as Service)}
+              >
                 <Button className="w-full" variant="outline">Xem chi tiết</Button>
-              </Link>
+              </div>
             </CardContent>
           </Card>
         ))}
@@ -82,6 +89,8 @@ export default function ServicesPage() {
           </button>
         </div>
       )}
+      <ServiceDetailModal open={isModalOpen} onOpenChange={setIsModalOpen} service={selectedServiceId as Service} />
+
     </div>
   );
 }

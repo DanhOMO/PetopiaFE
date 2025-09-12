@@ -4,6 +4,7 @@ import ServiceSection from "./Section/ServiceSection"
 import BookingSection from "./Section/BookingSection"
 import ProductSection from "./Section/ProductSection"
 import AboutSection from "./Section/AboutSection"
+import CustomBreadcrumb from "@/app/components/CustomBreadcrumb";
 
 export default function MainPage() {
   return (
@@ -20,6 +21,10 @@ export default function MainPage() {
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/5 to-transparent pointer-events-none"></div>
       
       <div className="relative z-10 space-y-0">
+        {/* Breadcrumb cho trang chủ */}
+        <div className="px-4 pt-4">
+          <CustomBreadcrumb items={[{ label: "Trang chủ" }]} />
+        </div>
         <div className="animate-fade-in">
           <HeroSection />
         </div>

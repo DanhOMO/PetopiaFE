@@ -6,6 +6,8 @@ import {
   AvatarImage,
   AvatarFallback,
 } from "@/components/ui/avatar";
+import { ChevronDown } from "lucide-react";
+import UserBox from "@/app/components/UserBox";
 
 import {
   NavigationMenu,
@@ -15,22 +17,14 @@ import {
 } from "@/components/ui/navigation-menu";
 import { 
   Search, 
-  Phone, 
   ShoppingCart, 
-  Menu, 
-  Home,
-  Heart,
-  Settings,
-  Newspaper,
-  MessageCircle,
-  Info
+  Menu
 } from "lucide-react";
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCart } from "@/hooks/useCart";
-import { Item } from "@radix-ui/react-navigation-menu";
 
 const navItems = [
   { href: "/", label: "TRANG CHỦ" },
@@ -39,12 +33,27 @@ const navItems = [
   { href: "/news", label: "TIN TỨC" },
   { href: "/contacts", label: "LIÊN HỆ" },
   { href: "/abouts", label: "GIỚI THIỆU" },
-  
 ];
 
 export default function Header() {
   const pathname = usePathname();
-  const { getTotalQuantity, totalQuantity } = useCart();
+  const { getTotalQuantity } = useCart();
+
+  // Giả lập trạng thái đăng nhập
+  const [user, setUser] = React.useState<null | { name: string; avatar?: string }>(null);
+  const [openUserBox, setOpenUserBox] = React.useState(false);
+
+  // Đóng dropdown khi click ngoài
+  React.useEffect(() => {
+    if (!openUserBox) return;
+    const handler = (e: MouseEvent) => {
+      if (!(e.target instanceof HTMLElement)) return;
+      if (!e.target.closest("#user-avatar-dropdown")) setOpenUserBox(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [openUserBox]);
+
   return (
     <header className="w-full bg-[#7B4F35] flex items-center justify-between px-4 lg:px-8 py-4 backdrop-blur-sm transition-all duration-300">
       {/* Left: Logo & Navigation */}
@@ -57,7 +66,9 @@ export default function Header() {
             height={48}
             className="h-10 w-10 lg:h-12 lg:w-12 border-2 border-white rounded-full border-solid transition-transform duration-300 group-hover:scale-110"
           />
-          <span className="text-white text-lg lg:text-xl font-medium group-hover:text-orange-200 transition-colors duration-300">Petopia</span>
+          <span className="text-white text-lg lg:text-xl font-medium group-hover:text-orange-200 transition-colors duration-300">
+            Petopia
+          </span>
         </Link>
 
         {/* Navigation - Hidden on mobile */}
@@ -71,9 +82,7 @@ export default function Header() {
                     pathname === item.href ? "bg-white/25 font-bold text-[#F5D7B7] shadow-lg" : ""
                   }`}
                 >
-                  <Link href={item.href}>
-                    {item.label}
-                  </Link>
+                  <Link href={item.href}>{item.label}</Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
             ))}
@@ -83,6 +92,7 @@ export default function Header() {
 
       {/* Right: Search, Hotline, Cart, Avatar */}
       <div className="flex items-center gap-3 lg:gap-6">
+        {/* Search */}
         <Button
           variant="ghost"
           size="icon"
@@ -91,20 +101,7 @@ export default function Header() {
           <Search size={20} className="text-[#7B4F35] group-hover:text-[#6B3F25]" />
         </Button>
 
-        <div className="hidden md:flex items-center gap-3">
-          <Image 
-            src="/assets/icon/phucyen.png" 
-            alt="Phone Icon" 
-            width={24} 
-            height={24} 
-            className="object-contain"
-          />
-          <div className="text-white">
-            <div className="text-white font-medium text-sm">Hotline:</div>
-            <div className="font-bold text-base">092 532 37 37</div>
-          </div>
-        </div>
-
+        {/* Cart */}
         <Link href="/carts" className="relative">
           <Button
             variant="ghost"
@@ -118,12 +115,35 @@ export default function Header() {
           </Button>
         </Link>
 
-        <Avatar className="transition-transform duration-300 hover:scale-110 ring-2 ring-white/30 hover:ring-white/50">
-          <AvatarImage src="/avatar.jpg" alt="Avatar" />
-          <AvatarFallback className="bg-[#F5D7B7] text-[#7B4F35] font-bold">U</AvatarFallback>
-        </Avatar>
+        {/* User dropdown */}
+        <div id="user-avatar-dropdown" className="relative flex items-center">
+          <button
+            className="flex items-center gap-1 focus:outline-none"
+            onClick={() => setOpenUserBox((v) => !v)}
+            aria-label="Tài khoản"
+            type="button"
+          >
+            <Avatar className="transition-transform duration-300 hover:scale-110 ring-2 ring-white/30 hover:ring-white/50">
+              {user && user.avatar ? (
+                <AvatarImage src={user.avatar} alt={user.name} />
+              ) : (
+                <AvatarImage src="/avatar.jpg" alt="Avatar" />
+              )}
+              <AvatarFallback className="bg-[#F5D7B7] text-[#7B4F35] font-bold">
+                {user ? user.name.charAt(0).toUpperCase() : <span className="text-xl">👤</span>}
+              </AvatarFallback>
+            </Avatar>
+            <ChevronDown size={20} className="text-[#fff] ml-1" />
+          </button>
+          {openUserBox && (
+            <div className="absolute right-0 w-80 max-w-xs"
+            style={{ marginTop: '400px' }}>
+              <UserBox />
+            </div>
+          )}
+        </div>
 
-        {/* Mobile menu button */}
+        {/* Mobile menu */}
         <Button
           variant="ghost"
           size="icon"
@@ -132,5 +152,6 @@ export default function Header() {
           <Menu size={24} />
         </Button>
       </div>
-    </header>);
+    </header>
+  );
 }
