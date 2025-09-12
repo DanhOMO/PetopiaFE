@@ -16,10 +16,14 @@ import {
   ShoppingCart,
   Gift
 } from "lucide-react"
+import { usePathname } from "next/navigation";
 
 export default function Footer() {
+  const pathname = usePathname();
+  
+  
   return (
-    <footer className="gradient-primary text-white py-12 px-6 animate-fade-in">
+    <footer className="gradient-primary text-white pt-12  animate-fade-in">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-8">
         {/* Petopia Info */}
         <div className="animate-slide-up space-y-3">
@@ -103,10 +107,21 @@ export default function Footer() {
       </div>
       
      
-      {/* Copyright */}
-      <div className="mt-12 pt-8 border-t border-white/20 text-center text-gray-200">
-        <p>Chào mừng bạn đến với Petopia.</p>
-      </div>
+      {/* Google Map */}
+      {pathname !== "/contacts" && (  
+        <div className="w-full h-80 mt-10">
+          <iframe
+            src="https://www.google.com/maps?q=phường+11+Gò+Vấp&output=embed"
+            className="w-full h-full"
+            style={{ border: 0 }}
+            allowFullScreen
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            title="Petopia Location"
+          />
+        </div>
+      )}
+      
     </footer>
   )
-}
+} 
