@@ -5,8 +5,13 @@ import BookingSection from "./Section/BookingSection"
 import ProductSection from "./Section/ProductSection"
 import AboutSection from "./Section/AboutSection"
 import CustomBreadcrumb from "@/app/components/CustomBreadcrumb";
-
+import { useRef } from "react";
 export default function MainPage() {
+    const bookingRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBooking = () => {
+    bookingRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
   return (
     <main
       className="min-h-screen w-full relative overflow-hidden"
@@ -26,13 +31,13 @@ export default function MainPage() {
           <CustomBreadcrumb items={[{ label: "Trang chủ" }]} />
         </div>
         <div className="animate-fade-in">
-          <HeroSection />
+          <HeroSection onBookingClick= {scrollToBooking} />
         </div>
         <div className="animate-slide-up" style={{animationDelay: '0.2s'}}>
           <ServiceSection />
         </div>
         <div className="animate-slide-up" style={{animationDelay: '0.4s'}}>
-          <BookingSection />
+          <BookingSection ref={bookingRef} />
         </div>
         <div className="animate-slide-up" style={{animationDelay: '0.6s'}}>
           <ProductSection />
