@@ -3,8 +3,8 @@ import { Button } from "@/components/ui/button"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import Image from "next/image"
 import React from "react"
-
-export default function BookingSection() {
+import { forwardRef } from "react"
+const BookingSection = forwardRef<HTMLElement>((props, ref) => {
   const [form, setForm] = React.useState({
     name: "",
     phone: "",
@@ -45,7 +45,7 @@ export default function BookingSection() {
   };
 
   return (
-    <section className="relative bg-[#F5D7B7] py-10 px-4 flex flex-col items-center">
+    <section ref={ref} className="relative bg-[#F5D7B7] py-10 px-4 flex flex-col items-center">
        <Image
         src="/assets/iconAnimate/dog.gif"
         alt="Dog Icon"
@@ -118,4 +118,6 @@ export default function BookingSection() {
        />
     </section>
   )
-}
+})
+BookingSection.displayName = "BookingSection";
+export default BookingSection;
