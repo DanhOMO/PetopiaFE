@@ -1,9 +1,6 @@
 "use client";
 
 import { 
-  Facebook, 
-  Music2, 
-  Youtube, 
   MapPin, 
   Mail, 
   Phone, 
@@ -17,6 +14,7 @@ import {
   Gift
 } from "lucide-react"
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 
 export default function Footer() {
   const pathname = usePathname();
@@ -43,14 +41,32 @@ export default function Footer() {
             </p>
           </div>
           <div className="flex gap-3 mt-4">
-            <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center hover-lift cursor-pointer">
-              <Facebook size={20} />
+            <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center hover-lift cursor-pointer p-2">
+              <Image 
+                src="/assets/icon/facebook.png" 
+                alt="Facebook" 
+                width={24} 
+                height={24}
+                className="object-contain"
+              />
             </div>
-            <div className="w-10 h-10 bg-black rounded-full flex items-center justify-center hover-lift cursor-pointer">
-              <Music2 size={20} />
+            <div className="w-10 h-10 bg-black rounded-full flex items-center justify-center hover-lift cursor-pointer p-2">
+              <Image 
+                src="/assets/icon/tiktok.png" 
+                alt="TikTok" 
+                width={24} 
+                height={24}
+                className="object-contain"
+              />
             </div>
-            <div className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center hover-lift cursor-pointer">
-              <Youtube size={20} />
+            <div className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center hover-lift cursor-pointer p-2">
+              <Image 
+                src="/assets/icon/youtube.png" 
+                alt="YouTube" 
+                width={24} 
+                height={24}
+                className="object-contain"
+              />
             </div>
           </div>
         </div>

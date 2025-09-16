@@ -180,6 +180,11 @@
   .gradient-overlay {
     background: linear-gradient(rgba(123, 79, 53, 0.8), rgba(196, 108, 43, 0.8));
   }
+
+  /* Slow spin animation */
+  .animate-spin-slow {
+    animation: spin 8s linear infinite;
+  }
 }
 
 @keyframes fadeIn {
@@ -213,4 +218,52 @@
     opacity: 1;
     transform: scale(1);
   }
+}
+
+/* Gallery scrollbar hiding and smooth dragging */
+.gallery-container::-webkit-scrollbar {
+  display: none;
+}
+
+.gallery-container {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+  transition: scroll-behavior 0.1s ease;
+  will-change: scroll-position, transform;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: none;
+
+}
+
+.gallery-container:active {
+  scroll-behavior: auto;
+}
+
+.gallery-container:hover {
+  scroll-behavior: smooth;
+}
+
+/* Smooth scroll animation */
+@keyframes smooth-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+/* Smooth image transitions */
+.gallery-image {
+  transition: transform 0.4s;
+             
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.gallery-image:hover {
+  transform: translateY(-12px) scale(1.08);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
 }
