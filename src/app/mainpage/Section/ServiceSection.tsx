@@ -32,10 +32,10 @@ export default function ServiceSection() {
             name: string;
             description: string;
             price: number;
-            img_url?: string;
+            imgUrl?: string;
             icon?: string;
             color?: string;
-            discount_price?: number;
+            
           }) => (
             <Card
               key={service.serviceId}
@@ -48,7 +48,7 @@ export default function ServiceSection() {
               <CardContent className="flex flex-col items-center p-6">
                 <div className={`w-24 h-24 rounded-full ${service.color || 'bg-[#A0694B]'} flex items-center justify-center mb-4 shadow-md group overflow-hidden`}>
                   <Image
-                    src={service.icon || service.img_url || "/assets/imgs/service/default.jpg"}
+                    src={service.icon || service.imgUrl || "/assets/imgs/service/default.jpg"}
                     alt="Service Icon"
                     width={96}
                     height={96}

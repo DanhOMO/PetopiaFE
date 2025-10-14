@@ -2,40 +2,40 @@ import { z } from "zod";
 import { router, publicProcedure } from "../trpc";
 
 export type Notification = {
-  notification_id: string;
-  user_id: string;
+  notificationId: string;
+  userId: string;
   title: string;
   content: string;
   typeNote: "ORDER_UPDATE" | "NEW_PET" | "VACCINATION_REMINDER" | "PROMOTION";
-  is_read: boolean;
-  created_at: string;
+  isRead: boolean;
+  createdAt: string;
 };
 
-// Fake data demo, thay bằng truy vấn DB thực tế
+// Dữ liệu mẫu, bạn có thể thay bằng truy vấn từ cơ sở dữ liệu
 const notifications: Notification[] = [
   {
-    notification_id: "N001",
-    user_id: "U001",
+    notificationId: "N001",
+    userId: "U001",
     title: "Đơn hàng đã được xác nhận",
     content: "Đơn hàng #1234 của bạn đã được xác nhận.",
     typeNote: "ORDER_UPDATE",
-    is_read: false,
-    created_at: new Date().toISOString(),
+    isRead: false,
+    createdAt: new Date().toISOString(),
   },
   {
-    notification_id: "N002",
-    user_id: "U002",
+    notificationId: "N002",
+    userId: "U002",
     title: "Có thú cưng mới!",
     content: "Chúng tôi vừa thêm một bé mèo mới siêu dễ thương.",
     typeNote: "NEW_PET",
-    is_read: false,
-    created_at: new Date().toISOString(),
+    isRead: false,
+    createdAt: new Date().toISOString(),
   },
 ];
 
 export const notificationRouter = router({
   getAll: publicProcedure.query(() => {
-    // Thay bằng truy vấn DB thực tế
+    // Thay bằng logic truy vấn CSDL của bạn ở đây
     return notifications;
   }),
 });

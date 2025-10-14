@@ -21,96 +21,101 @@ export default function AboutSection() {
         <div className="absolute top-1/2 left-1/4 w-16 h-16 rounded-full bg-[#8B5A3C]/10"></div>
       </div>
 
+      {/* Outer bordered container */}
       <div className="max-w-6xl mx-auto relative z-10">
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-3 mb-6">
-            <div className="w-12 h-0.5 bg-[#7B4F35]"></div>
-            <span className="text-[#7B4F35] text-sm font-medium tracking-wider uppercase">Về chúng tôi</span>
-            <div className="w-12 h-0.5 bg-[#7B4F35]"></div>
-          </div>
-
-          <h1 className="text-5xl md:text-6xl font-bold text-[#7B4F35] mb-6 text-balance">
-            <span className="text-[#A0694B]">PETOPIA</span>
-          </h1>
-
-          <p className="text-xl text-[#8B5A3C] max-w-3xl mx-auto leading-relaxed text-pretty">
-            Đồng hành cùng bạn trong hành trình chăm sóc những người bạn bốn chân
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-12 mb-20">
-          <div className="space-y-8">
-            <div className="flex gap-6">
-              <div className="flex-shrink-0">
-                <div className="w-12 h-12 rounded-full bg-[#7B4F35] text-white flex items-center justify-center text-xl font-bold">
-                  1
-                </div>
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold text-[#7B4F35] mb-3">Kinh nghiệm 20 năm</h3>
-                <p className="text-[#8B5A3C] leading-relaxed">
-                  Là cơ sở chuyên cung cấp và chăm sóc thú cưng lớn nhất tại Việt Nam với 20 năm kinh nghiệm trong
-                  ngành.
-                </p>
-              </div>
+        <div className="rounded-3xl border-2 border-[#ecac87]   bg-white/5 p-6 md:p-10 shadow-md">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-3 mb-6">
+              <div className="w-12 h-0.5 bg-[#7B4F35]"></div>
+              <span className="text-[#7B4F35] text-sm font-medium tracking-wider uppercase">Về chúng tôi</span>
+              <div className="w-12 h-0.5 bg-[#7B4F35]"></div>
             </div>
-          </div>
 
-          <div className="space-y-8">
-            <div className="flex gap-6">
-              <div className="flex-shrink-0">
-                <div className="w-12 h-12 rounded-full bg-[#7B4F35] text-white flex items-center justify-center text-xl font-bold">
-                  2
-                </div>
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold text-[#7B4F35] mb-3">Sứ mệnh của chúng tôi</h3>
-                <p className="text-[#8B5A3C] leading-relaxed">
-                  Trao hi vọng - gắn kết yêu thương - đồng hành - chia sẻ cùng mọi gia đình yêu thú cưng.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
+            <h1 className="text-5xl md:text-6xl font-bold text-[#7B4F35] mb-6 text-balance">
+              <span className="text-[#A0694B]">PETOPIA</span>
+            </h1>
 
-        <div className="bg-white/80 border border-[#E8C4A0] rounded-2xl p-8 md:p-12 mb-16 shadow-sm">
-          <div className="text-center">
-            <h2 className="text-2xl md:text-3xl font-bold text-[#7B4F35] mb-6 text-balance">
-              Kết nối yêu thương, chăm sóc tận tâm
-            </h2>
-            <p className="text-lg text-[#8B5A3C] leading-relaxed max-w-4xl mx-auto text-pretty">
-              Chúng tôi tự hào là đơn vị tiên phong trong việc cung cấp dịch vụ chăm sóc thú cưng toàn diện, từ thức ăn
-              dinh dưỡng, phụ kiện chất lượng đến dịch vụ chăm sóc sức khỏe chuyên nghiệp. Với đội ngũ chuyên gia giàu
-              kinh nghiệm và tình yêu thương dành cho động vật, chúng tôi cam kết mang đến những trải nghiệm tốt nhất
-              cho thú cưng của bạn.
+            <p className="text-xl text-[#8B5A3C] max-w-3xl mx-auto leading-relaxed text-pretty">
+              Đồng hành cùng bạn trong hành trình chăm sóc những người bạn bốn chân
             </p>
           </div>
-        </div>
 
-        <div className="text-center mb-12">
-          <h3 className="text-2xl font-bold text-[#7B4F35] mb-4">Những người bạn đáng yêu</h3>
-          <p className="text-[#8B5A3C]">Khám phá thế giới đa dạng của các loài thú cưng mà chúng tôi chăm sóc</p>
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-          {pets.map((pet) => (
-            <div key={pet.id} className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 rounded-xl overflow-hidden">
-              <Lens
-                zoomFactor={2}
-                lensSize={100}
-                isStatic={false}
-                ariaLabel="Zoom Pet Image"
-              >
-                <img
-                  src={pet.src || "/placeholder.svg"}
-                  alt={pet.alt}
-                  className="w-full h-full object-cover transition-transform duration-300 rounded-xl"
-                />
-              </Lens>
+          <div className="grid md:grid-cols-2 gap-12 mb-20">
+            <div className="space-y-8">
+              <div className="flex gap-6">
+                <div className="flex-shrink-0">
+                  <div className="w-12 h-12 rounded-full bg-[#7B4F35] text-white flex items-center justify-center text-xl font-bold">
+                    1
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-[#7B4F35] mb-3">Kinh nghiệm 20 năm</h3>
+                  <p className="text-[#8B5A3C] leading-relaxed">
+                    Là cơ sở chuyên cung cấp và chăm sóc thú cưng lớn nhất tại Việt Nam với 20 năm kinh nghiệm trong
+                    ngành.
+                  </p>
+                </div>
+              </div>
             </div>
-          ))}
+
+            <div className="space-y-8">
+              <div className="flex gap-6">
+                <div className="flex-shrink-0">
+                  <div className="w-12 h-12 rounded-full bg-[#7B4F35] text-white flex items-center justify-center text-xl font-bold">
+                    2
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-[#7B4F35] mb-3">Sứ mệnh của chúng tôi</h3>
+                  <p className="text-[#8B5A3C] leading-relaxed">
+                    Trao hi vọng - gắn kết yêu thương - đồng hành - chia sẻ cùng mọi gia đình yêu thú cưng.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white/80 border border-[#E8C4A0] rounded-2xl p-8 md:p-12 mb-16 shadow-sm">
+            <div className="text-center">
+              <h2 className="text-2xl md:text-3xl font-bold text-[#7B4F35] mb-6 text-balance">
+                Kết nối yêu thương, chăm sóc tận tâm
+              </h2>
+              <p className="text-lg text-[#8B5A3C] leading-relaxed max-w-4xl mx-auto text-pretty">
+                Chúng tôi tự hào là đơn vị tiên phong trong việc cung cấp dịch vụ chăm sóc thú cưng toàn diện, từ thức ăn
+                dinh dưỡng, phụ kiện chất lượng đến dịch vụ chăm sóc sức khỏe chuyên nghiệp. Với đội ngũ chuyên gia giàu
+                kinh nghiệm và tình yêu thương dành cho động vật, chúng tôi cam kết mang đến những trải nghiệm tốt nhất
+                cho thú cưng của bạn.
+              </p>
+            </div>
+          </div>
+
+          <div className="text-center mb-12">
+            <h3 className="text-2xl font-bold text-[#7B4F35] mb-4">Những người bạn đáng yêu</h3>
+            <p className="text-[#8B5A3C]">Khám phá thế giới đa dạng của các loài thú cưng mà chúng tôi chăm sóc</p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+            {pets.map((pet) => (
+              <div
+                key={pet.id}
+                className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 rounded-xl overflow-hidden border border-[#E8C4A0] bg-white/30"
+              >
+                <Lens
+                  zoomFactor={2}
+                  lensSize={100}
+                  isStatic={false}
+                  ariaLabel="Zoom Pet Image"
+                >
+                  <img
+                    src={pet.src || "/placeholder.svg"}
+                    alt={pet.alt}
+                    className="w-full h-full object-cover transition-transform duration-300 rounded-xl"
+                  />
+                </Lens>
+              </div>
+            ))}
+          </div>
         </div>
-        
       </div>
       
       {/* Decor Images */}

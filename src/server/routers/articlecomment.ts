@@ -4,36 +4,44 @@ import { router, publicProcedure } from "../trpc";
 /**
  * Simple mock router for ArticleComment (similar style to your article router).
  * - getAll: trả về danh sách bình luận mẫu
- * - getByArticle: trả về bình luận theo article_id
+ * - getByArticle: trả về bình luận theo articleId
  * - create: tạo bình luận mới (mock, không lưu DB)
  *
  * Bạn có thể thay đổi để gọi DB (prisma/knex/...) trong production.
  */
+export type ArticleComment = {
+  commentId: string; // PK
+  content: string; // NOT NULL
+  createdAt: string; // DATETIME -> ISO string
+  updatedAt: string; // DATETIME -> ISO string
+  articleId: string; // FK -> Article
+  userId?: string | null; // FK -> User
+};
 
-const mockComments = [
+const mockComments: ArticleComment[] = [
   {
-    comment_id: "C001",
+    commentId: "C001",
     content: "Bài viết rất hữu ích, cảm ơn bạn!",
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-    article_id: "A001",
-    user_id: "U001",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    articleId: "A001",
+    userId: "U001",
   },
   {
-    comment_id: "C002",
+    commentId: "C002",
     content: "Mình đã áp dụng và kết quả rất tốt.",
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-    article_id: "A001",
-    user_id: "U002",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    articleId: "A001",
+    userId: "U002",
   },
   {
-    comment_id: "C003",
+    commentId: "C003",
     content: "Cần thêm ảnh minh họa nữa.",
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-    article_id: "A002",
-    user_id: "U003",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    articleId: "A002",
+    userId: "U003",
   },
 ];
 
@@ -45,28 +53,29 @@ export const articleCommentRouter = router({
   getByArticle: publicProcedure
     .input(
       z.object({
-        article_id: z.string(),
+        articleId: z.string(),
       })
     )
     .query(({ input }) => {
-      return mockComments.filter((c) => c.article_id === input.article_id);
+      return mockComments.filter((c) => c.articleId === input.articleId);
     }),
 
   create: publicProcedure
     .input(
       z.object({
-        comment_id: z.string(),
-        article_id: z.string(),
+        commentId: z.string(),
+        articleId: z.string(),
         content: z.string().min(1),
-        user_id: z.string().nullable().optional(),
+        userId: z.string().nullable().optional(),
       })
     )
     .mutation(({ input }) => {
       const now = new Date().toISOString();
-      const newComment = {
+      const newComment: ArticleComment = {
         ...input,
-        created_at: now,
-        updated_at: now,
+        userId: input.userId ?? null,
+        createdAt: now,
+        updatedAt: now,
       };
       // NOTE: đây chỉ là mock trả về, nếu dùng DB hãy lưu vào DB tại đây
       return newComment;
@@ -75,7 +84,7 @@ export const articleCommentRouter = router({
   update: publicProcedure
     .input(
       z.object({
-        comment_id: z.string(),
+        commentId: z.string(),
         content: z.string().min(1),
       })
     )
@@ -83,21 +92,21 @@ export const articleCommentRouter = router({
       const now = new Date().toISOString();
       // mock update: trả về đối tượng đã cập nhật
       return {
-        comment_id: input.comment_id,
+        commentId: input.commentId,
         content: input.content,
-        updated_at: now,
+        updatedAt: now,
       };
     }),
 
   delete: publicProcedure
     .input(
       z.object({
-        comment_id: z.string(),
+        commentId: z.string(),
       })
     )
     .mutation(({ input }) => {
       // mock delete: trả về id đã xóa
-      return { deleted: true, comment_id: input.comment_id };
+      return { deleted: true, commentId: input.commentId };
     }),
 });
 

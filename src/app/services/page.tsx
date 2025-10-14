@@ -34,13 +34,13 @@ export default function ServicesPage() {
           name: string;
           description: string;
           price: number;
-          img_url?: string;
+          imgUrl?: string;
         }) => (
           <Card key={service.serviceId} className="flex flex-col items-center p-4">
             <CardContent className="w-full flex flex-col items-center">
               <div className="w-full h-40 relative mb-4">
                 <Image
-                  src={service.img_url || "/assets/imgs/service/default.jpg"}
+                  src={service.imgUrl || "/assets/imgs/service/default.jpg"}
                   alt={service.name}
                   fill
                   className="object-cover rounded-xl"

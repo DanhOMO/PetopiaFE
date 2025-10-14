@@ -22,7 +22,7 @@ export function ServiceDetailModal({ open, onOpenChange, service }: {
           <div className="flex-1 flex flex-col gap-4 items-center min-w-[220px]">
             <div className="w-full aspect-square min-h-[220px] relative rounded-2xl overflow-hidden border-2 border-[#C46C2B] bg-gray-100">
               <Image
-                src={service.img_url || "/imgs/imgPet/animal-8165466_1280.jpg"}
+                src={service.imgUrl || "/imgs/imgPet/animal-8165466_1280.jpg"}
                 alt={service.name}
                 fill
                 className="object-cover"

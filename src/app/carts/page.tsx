@@ -24,7 +24,7 @@ export default function CartPage() {
   return (
     <section className="bg-[#F5D7B7] min-h-screen py-10 px-4 flex flex-col items-center">
       <h1 className="text-3xl font-bold text-[#7B4F35] mb-8">Giỏ Hàng</h1>
-  <div className="w-full max-w-6xl mx-auto space-y-10 px-2 md:px-8">
+      <div className="w-full max-w-6xl mx-auto space-y-10 px-2 md:px-8">
         {cart.length === 0 ? (
           <Card className="p-10 text-center text-[#7B4F35] font-semibold shadow-lg bg-white/80">
             <div className="flex flex-col items-center gap-2">
@@ -42,7 +42,7 @@ export default function CartPage() {
           <div className="flex flex-col gap-10">
             {cart.map((item: CartItem) => (
               <Card
-                key={item.pet.pet_id}
+                key={item.pet.petId}
                 className="grid grid-cols-1 md:grid-cols-2 gap-10 p-10 rounded-3xl shadow-2xl bg-white hover:shadow-2xl transition-all border-0 w-full"
               >
                 {/* Bên trái */}
@@ -74,7 +74,7 @@ export default function CartPage() {
                     size="icon"
                     variant="ghost"
                     className="text-red-500 hover:bg-red-100 self-end"
-                    onClick={() => removeFromCart(item.pet.pet_id)}
+                    onClick={() => removeFromCart(item.pet.petId)}
                     aria-label="Xóa khỏi giỏ hàng"
                   >
                     ✕
@@ -82,10 +82,10 @@ export default function CartPage() {
 
                   {/* Giá */}
                   <div className="flex items-center gap-3 mb-4">
-                    {item.pet.discount_price ? (
+                    {item.pet.discountPrice ? (
                       <>
                         <span className="text-3xl font-extrabold text-[#C46C2B]">
-                          {item.pet.discount_price.toLocaleString()}₫
+                          {item.pet.discountPrice.toLocaleString()}₫
                         </span>
                         <span className="text-gray-400 line-through text-lg">
                           {item.pet.price.toLocaleString()}₫
@@ -107,7 +107,7 @@ export default function CartPage() {
                         className="w-10 h-10 flex items-center justify-center text-[#C46C2B] text-xl"
                         onClick={() =>
                           updateQuantity(
-                            item.pet.pet_id,
+                            item.pet.petId,
                             Math.max(1, item.quantity - 1)
                           )
                         }
@@ -121,7 +121,7 @@ export default function CartPage() {
                         variant="ghost"
                         className="w-10 h-10 flex items-center justify-center text-[#C46C2B] text-xl"
                         onClick={() =>
-                          updateQuantity(item.pet.pet_id, item.quantity + 1)
+                          updateQuantity(item.pet.petId, item.quantity + 1)
                         }
                       >
                         +
