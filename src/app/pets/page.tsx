@@ -6,7 +6,7 @@ import { trpc } from "../../utils/trpc";
 import Image from "next/image";
 import Link from "next/link";
 import {Loading} from "../components/loading";
-import { PetDetailModal } from "@/app/components/PetDetailModal";
+import { PetDetailModal } from "@/app/components/pet/PetDetailModal";
 import { useCart } from "@/hooks/useCart";
 
 import type { Pet } from "@/types/Pet"

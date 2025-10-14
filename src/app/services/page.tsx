@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { trpc } from "../../utils/trpc";
 import Link from "next/link";
 import Image from "next/image";
-import { ServiceDetailModal } from "@/app/components/ServiceDetailModal";
+import { ServiceDetailModal } from "@/app/components/service/ServiceDetailModal";
 import type { Service } from "@/types/Service";
 export default function ServicesPage() {
   // Phân trang: mỗi trang 6 dịch vụ

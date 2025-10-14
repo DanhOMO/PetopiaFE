@@ -7,7 +7,7 @@ import {
   AvatarFallback,
 } from "@/components/ui/avatar";
 import { ChevronDown } from "lucide-react";
-import UserBox from "@/app/components/UserBox";
+import UserBox from "@/app/components/user/UserBox";
 
 import {
   NavigationMenu,
