@@ -34,7 +34,7 @@ export default function UserBox() {
             Tạo tài khoản
           </Link>
           <Link
-            href="/login"
+            href="/users"
             className="flex-1 bg-[#7B4F35] hover:bg-[#6B3F25] text-white text-center py-2 rounded"
           >
             Đăng nhập
