@@ -61,16 +61,24 @@ const CartPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#F5D7B7] to-[#FDF6E3]">
-      {/* Cart Title */}
-        <div className="bg-gradient-to-b from-[#E8C5A0]/50 to-transparent py-16">
-        <div className="container mx-auto px-4">
-          <h1 
-            className="text-center font-bold text-6xl text-[#7B4F35]"
-          >
-            Giỏ hàng
-          </h1>
+        {/* Cart Title */}
+        <div className="relative py-24">
+          <div className="absolute inset-0">
+            <img 
+              src="/assets/imgs/imgBackgroundTitle/bc-blog-listing.jpg"
+              alt="Cart Background"
+              className="w-full h-full object-cover object-top"
+            />
+            <div className="absolute inset-0 bg-black/20"></div>
+          </div>
+          <div className="container mx-auto px-4 relative z-10">
+            <h1 
+              className="text-center font-bold text-6xl text-white drop-shadow-lg"
+            >
+              Giỏ hàng
+            </h1>
+          </div>
         </div>
-      </div>
 
       {cartItems.length === 0 ? (
         // Empty cart - hiển thị SVG và text
