@@ -103,53 +103,72 @@ interface BlogCardProps {
 
 function BlogCard({ date, month, title, description, image, articleId }: BlogCardProps) {
   return (
-    <Link href={`/news/${articleId}`}>
-      <article className="group relative flex flex-col overflow-visible rounded-[32px] bg-[#f5e6d3] p-4 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl min-h-[420px]">
-        <div
-          className="absolute inset-0 rounded-[32px] bg-[#f5e6d3] transition-colors duration-300 group-hover:bg-[#ff7b7b]"
-          style={{
-            clipPath:
-              'path("M 0 32 Q 0 0 32 0 L calc(100% - 32) 0 Q 100% 0 100% 32 L 100% calc(100% - 80) Q 100% calc(100% - 70) 95% calc(100% - 65) Q 90% calc(100% - 60) 85% calc(100% - 60) Q 80% calc(100% - 60) 75% calc(100% - 65) Q 70% calc(100% - 70) 70% calc(100% - 80) L 70% calc(100% - 32) Q 70% 100% 32 100% L 32 100% Q 0 100% 0 calc(100% - 32) Z")',
-          }}
-        />
+    <div className="group relative">
+      <Link href={`/news/${articleId}`}>
+        <article className="relative flex flex-col overflow-hidden rounded-[32px] bg-[#f5e6d3] p-4 transition-all duration-300 hover:shadow-xl min-h-[420px]">
+          {/* Background layer */}
+          <div
+            className="absolute inset-0 rounded-[32px] bg-[#f5e6d3]"
+            style={{
+              clipPath:
+                'path("M 0 32 Q 0 0 32 0 L calc(100% - 32) 0 Q 100% 0 100% 32 L 100% calc(100% - 80) Q 100% calc(100% - 70) 95% calc(100% - 65) Q 90% calc(100% - 60) 85% calc(100% - 60) Q 80% calc(100% - 60) 75% calc(100% - 65) Q 70% calc(100% - 70) 70% calc(100% - 80) L 70% calc(100% - 32) Q 70% 100% 32 100% L 32 100% Q 0 100% 0 calc(100% - 32) Z")',
+            }}
+          />
+          
+          {/* Hover effect layer - từ góc dưới phải lên */}
+          <div
+            className="absolute inset-0 rounded-[32px] bg-[#ff7b7b] transition-all duration-500 ease-out translate-x-full translate-y-full group-hover:translate-x-0 group-hover:translate-y-0"
+            style={{
+              clipPath:
+                'path("M 0 32 Q 0 0 32 0 L calc(100% - 32) 0 Q 100% 0 100% 32 L 100% calc(100% - 80) Q 100% calc(100% - 70) 95% calc(100% - 65) Q 90% calc(100% - 60) 85% calc(100% - 60) Q 80% calc(100% - 60) 75% calc(100% - 65) Q 70% calc(100% - 70) 70% calc(100% - 80) L 70% calc(100% - 32) Q 70% 100% 32 100% L 32 100% Q 0 100% 0 calc(100% - 32) Z")',
+              transformOrigin: 'bottom right',
+            }}
+          />
 
-        {/* Content wrapper with relative positioning */}
-        <div className="relative z-10 flex flex-col h-full">
-          {/* Image Container */}
-          <div className="relative mb-4 overflow-hidden rounded-[24px]">
-            <Image
-              src={image || "/assets/imgs/imgPet/animal-8165466_1280.jpg"}
-              alt={title}
-              width={500}
-              height={300}
-              className="h-[180px] w-full object-cover"
-            />
+          {/* Content wrapper with relative positioning */}
+          <div className="relative z-10 flex flex-col h-full">
+            {/* Image Container */}
+            <div className="relative mb-4 overflow-hidden rounded-[24px]">
+              <Image
+                src={image || "/assets/imgs/imgPet/animal-8165466_1280.jpg"}
+                alt={title}
+                width={500}
+                height={300}
+                className="h-[180px] w-full object-cover"
+              />
 
-            {/* Date Badge */}
-            <div className="absolute left-4 top-4 flex flex-col items-center justify-center rounded-xl bg-[#ff6b6b] px-3 py-2 text-white shadow-lg transition-all duration-300 group-hover:bg-white group-hover:text-[#2d2d2d]">
-              <span className="text-xl font-bold leading-none">{date}</span>
-              <span className="text-sm font-medium leading-none">{month}</span>
+              {/* Date Badge */}
+              <div className="absolute left-4 top-4 flex flex-col items-center justify-center rounded-xl bg-[#ff6b6b] px-3 py-2 text-white shadow-lg transition-all duration-300 group-hover:bg-white group-hover:text-[#2d2d2d]">
+                <span className="text-xl font-bold leading-none">{date}</span>
+                <span className="text-sm font-medium leading-none">{month}</span>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="flex flex-1 flex-col px-2 pb-2">
+              <h3 className="mb-2 font-sans text-lg font-bold leading-tight text-[#2d2d2d] transition-colors duration-300 group-hover:text-white line-clamp-2">
+                {title}
+              </h3>
+              <p className="mb-3 flex-1 font-sans text-sm leading-relaxed text-[#6b6b6b] transition-colors duration-300 group-hover:text-white line-clamp-3">
+                {description}
+              </p>
             </div>
           </div>
-
-          {/* Content */}
-          <div className="flex flex-1 flex-col px-2 pb-2">
-            <h3 className="mb-2 font-sans text-lg font-bold leading-tight text-[#2d2d2d] transition-colors duration-300 group-hover:text-white line-clamp-2">
-              {title}
-            </h3>
-            <p className="mb-3 flex-1 font-sans text-sm leading-relaxed text-[#6b6b6b] transition-colors duration-300 group-hover:text-white line-clamp-3">
-              {description}
-            </p>
-          </div>
-        </div>
-
-        <button
-          className="absolute -bottom-2 -right-2 z-20 flex h-14 w-14 items-center justify-center rounded-full bg-[#ff6b6b] text-white shadow-lg transition-all duration-300 group-hover:bg-[#1a3a52] hover:scale-110"
-          aria-label="Read more"
-        >
-          <ArrowUpRight className="h-6 w-6" />
-        </button>
-      </article>
-    </Link>
+        </article>
+      </Link>
+      
+      {/* Button bên ngoài article để không bị overflow-hidden che */}
+      <button
+        className="absolute -bottom-2 -right-2 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#ff6b6b] text-white shadow-lg transition-all duration-300 group-hover:bg-[#1a3a52] hover:scale-110"
+        aria-label="Read more"
+        onClick={() => window.location.href = `/news/${articleId}`}
+      >
+        <img 
+          src="/assets/svg/muiten.svg" 
+          alt="Arrow" 
+          className="h-6 w-6 transition-transform duration-300 -rotate-65 group-hover:rotate-0 filter brightness-0 invert"
+        />
+      </button>
+    </div>
   )
 }
