@@ -2,6 +2,7 @@
 
 import { ShoppingCart, Star, Heart } from "lucide-react"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 
 interface Product {
   petId: string
@@ -20,9 +21,27 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, onAddToCart }: ProductCardProps) {
   const rating = product.rating || 4 // Default rating
+  const router = useRouter()
+
+  const handleCardClick = () => {
+    router.push(`/pets/${product.petId}`)
+  }
+
+  const handleBuyNow = (e: React.MouseEvent) => {
+    e.stopPropagation() // Prevent card click when clicking buy now
+    router.push(`/pets/${product.petId}`)
+  }
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.stopPropagation() // Prevent card click when clicking add to cart
+    onAddToCart()
+  }
 
   return (
-    <div className="group rounded-2xl bg-[#fff0f0] p-4 shadow-lg hover:shadow-xl hover:bg-[#FF6B6B] transition-all duration-300 relative">
+    <div 
+      onClick={handleCardClick}
+      className="group rounded-2xl bg-[#fff0f0] p-4 shadow-lg hover:shadow-xl hover:bg-[#FF6B6B] transition-all duration-300 relative cursor-pointer"
+    >
       {/* Heart Icon - appears on hover */}
       <div className="absolute top-6 left-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 cursor-pointer">
         <div className="w-10 h-10 bg-[#FF6B6B] rounded-full flex items-center justify-center shadow-md hover:bg-[#102937] transition-colors duration-300">
@@ -32,8 +51,8 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
 
       {/* Shopping Cart Icon - appears on hover */}
       <div 
-        className="absolute top-6 left-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 cursor-pointer"
-        onClick={onAddToCart}
+        className="absolute top-6 left-18 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 cursor-pointer"
+        onClick={handleAddToCart}
       >
         <div className="w-10 h-10 bg-[#FF6B6B] rounded-full flex items-center justify-center shadow-md hover:bg-[#102937] transition-colors duration-300">
           <ShoppingCart size={18} className="text-white" />
@@ -84,8 +103,8 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
 
       {/* Buy Now Button */}
       <button 
-        onClick={onAddToCart}
-        className="w-full bg-[#FF6B6B] group-hover:bg-[#102937] text-white py-3 px-4 rounded-lg transition-colors duration-300 font-semibold"
+        onClick={handleBuyNow}
+        className="w-full bg-[#FF6B6B] group-hover:bg-[#102937] text-white py-3 px-4 rounded-lg transition-colors duration-300 font-semibold cursor-pointer hover:cursor-pointer"
       >
         Mua ngay
       </button>
