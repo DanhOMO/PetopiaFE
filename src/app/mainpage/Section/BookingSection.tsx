@@ -153,7 +153,7 @@ const BookingSection = forwardRef<HTMLElement>((props, ref) => {
           {/* Submit Button */}
           <Button 
             type="submit" 
-            className="w-full h-14 bg-[#7B4F35] text-white font-semibold text-lg rounded-xl hover:bg-[#5a3827] transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+            className="w-full h-14 bg-[#7B4F35] text-white font-semibold text-lg rounded-xl hover:bg-black transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
           >
             Đặt lịch ngay
           </Button>
