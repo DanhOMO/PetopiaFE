@@ -41,8 +41,29 @@ export default function PetsPage() {
   const pagedPets = pets?.slice((page - 1) * pageSize, page * pageSize) || [];
 
   return (
-    <div className="w-full max-w-6xl mx-auto py-10">
-      <h1 className="text-3xl font-bold mb-8 text-center">Danh sách thú cưng</h1>
+    <>
+      {/* Background section with full width */}
+      <div className="relative py-24 w-full">
+        <div className="absolute inset-0">
+          <Image 
+            src="/assets/imgs/imgBackgroundTitle/bc-shop-details.jpg"
+            alt="Pets Background"
+            fill
+            className="w-full h-full object-cover object-top"
+          />
+          <div className="absolute inset-0 bg-black/20"></div>
+        </div>
+        <div className="container mx-auto px-4 relative z-10">
+          <h1 
+            className="text-center font-bold text-6xl text-white drop-shadow-lg"
+          >
+            Thú cưng
+          </h1>
+        </div>
+      </div>
+      
+      {/* Pets Section */}
+      <div className="w-full max-w-6xl mx-auto py-10">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
         {pagedPets.map((pet) => (
           <div key={pet.petId} className="relative group cursor-pointer">
@@ -161,6 +182,7 @@ export default function PetsPage() {
         petId={selectedPetId || ""}
         onOpenChange={(open) => setIsModalOpen(open)}
       />
-    </div>
+      </div>
+    </>
   );
 }

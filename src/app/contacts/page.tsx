@@ -78,7 +78,7 @@ export default function ContactPage() {
         </div>
       </div>
 
-      <div className="bg-[#f5d7b7]" style={{ height: '100px' }}></div>
+      <div className="bg-white" style={{ height: '100px' }}></div>
 
       <div className="flex relative">
         {/* Location Info Overlay - Center between left and right */}
@@ -241,7 +241,7 @@ export default function ContactPage() {
         </div>
         </div>
       </div>
-      <div className="bg-[#f5d7b7]" style={{ height: '100px' }}></div>
+      <div className="bg-white" style={{ height: '100px' }}></div>
 
     </div>
   );

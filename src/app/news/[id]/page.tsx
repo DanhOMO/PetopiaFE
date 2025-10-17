@@ -210,7 +210,7 @@ export default function ArticleDetailPage() {
                 content: content.trim(),
               });
             }}
-            className="bg-gray-50 p-6 rounded-lg border"
+            className="bg-gray-50 p-6 rounded-lg border mb-10"
           >
             <label className="text-lg font-medium text-[#2d2d2d] mb-4 block">
               Thêm bình luận
