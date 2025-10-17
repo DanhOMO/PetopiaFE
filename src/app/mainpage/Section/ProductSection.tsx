@@ -24,7 +24,7 @@ export default function ProductSection() {
   if (error) return <div className="text-center py-10 text-red-500">Lỗi: {error.message}</div>;
 
   return (
-    <section className="bg-[#F5D7B7] py-10 px-4 flex flex-col items-center relative">
+    <section className=" py-10 px-4 flex flex-col items-center relative">
       {/* Title */}
       <div className="mb-8 flex flex-col items-center">
         <div className="relative">

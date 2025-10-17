@@ -4,7 +4,7 @@ import PetCannon from "../animate/PetCannon/PetCannon"
 
 export default function HeroSection({onBookingClick}: {onBookingClick: () => void}) {
   return (
-    <section className="bg-[#F5D7B7] py-10 px-10">
+    <section className=" py-10 px-10">
       <div className="flex flex-col md:flex-row items-center justify-between gap-8">
         {/* Left content */}
         <div className="flex-1">

@@ -14,7 +14,7 @@ const pets = [
 
 export default function AboutSection() {
   return (
-    <section className="bg-[#F5D7B7] py-20 px-4 relative overflow-hidden">
+    <section className=" py-20 px-4 relative overflow-hidden">
       <div className="absolute inset-0 opacity-20">
         <div className="absolute top-10 left-10 w-32 h-32 rounded-full bg-[#7B4F35]/10"></div>
         <div className="absolute bottom-20 right-20 w-24 h-24 rounded-full bg-[#A0694B]/10"></div>

@@ -73,7 +73,7 @@ export default function Header() {
             <Link
               key={link.href}
               href={link.href}
-              className={`flex items-center gap-2 text-white hover:text-[#F5D7B7] transition-colors font-medium ${
+              className={`group flex items-center gap-2 text-white hover:text-[#F5D7B7] transition-colors font-medium ${
                 pathname === link.href ? "text-[#F5D7B7] font-bold" : ""
               }`}
             >
@@ -82,7 +82,7 @@ export default function Header() {
                 alt="Paw icon"
                 width={20}
                 height={20}
-                className="w-5 h-5 filter brightness-0 invert"
+                className="w-5 h-5 filter brightness-0 invert transition-all duration-300 group-hover:brightness-0 group-hover:saturate-100 group-hover:invert-[53%] group-hover:sepia-100 group-hover:saturate-[4000%] group-hover:hue-rotate-[340deg] group-hover:brightness-105 group-hover:contrast-105"
               />
               {link.label}
             </Link>
@@ -92,7 +92,7 @@ export default function Header() {
             <Link
               key={link.href}
               href={link.href}
-              className={`flex items-center gap-2 text-white hover:text-[#F5D7B7] transition-colors font-medium ${
+              className={`group flex items-center gap-2 text-white hover:text-[#F5D7B7] transition-colors font-medium ${
                 pathname === link.href ? "text-[#F5D7B7] font-bold" : ""
               }`}
             >
@@ -101,7 +101,7 @@ export default function Header() {
                 alt="Paw icon"
                 width={20}
                 height={20}
-                className="w-5 h-5 filter brightness-0 invert"
+                className="w-5 h-5 filter brightness-0 invert transition-all duration-300 group-hover:brightness-0 group-hover:saturate-100 group-hover:invert-[53%] group-hover:sepia-100 group-hover:saturate-[4000%] group-hover:hue-rotate-[340deg] group-hover:brightness-105 group-hover:contrast-105"
               />
               {link.label}
             </Link>

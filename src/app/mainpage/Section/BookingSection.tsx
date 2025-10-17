@@ -4,48 +4,28 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import Image from "next/image"
 import React from "react"
 import { forwardRef } from "react"
-const BookingSection = forwardRef<HTMLElement>((props, ref) => {
-  const [form, setForm] = React.useState({
-    name: "",
-    phone: "",
-    email: "",
-    service: "",
-    note: ""
-  });
-  const [errors, setErrors] = React.useState({
-    name: "",
-    phone: "",
-    email: "",
-    service: ""
-  });
 
-  const validate = () => {
-    const newErrors: typeof errors = { name: "", phone: "", email: "", service: "" };
-    if (!form.name.trim()) newErrors.name = "Vui lòng nhập họ tên.";
-    if (!form.phone.trim()) newErrors.phone = "Vui lòng nhập số điện thoại.";
-    else if (!/^0\d{9,10}$/.test(form.phone.trim())) newErrors.phone = "Số điện thoại không hợp lệ.";
-    if (!form.email.trim()) newErrors.email = "Vui lòng nhập email.";
-    else if (!/^\S+@\S+\.\S+$/.test(form.email.trim())) newErrors.email = "Email không hợp lệ.";
-    if (!form.service) newErrors.service = "Vui lòng chọn dịch vụ.";
-    setErrors(newErrors);
-    return Object.values(newErrors).every((v) => !v);
-  };
+const BookingSection = forwardRef<HTMLElement>((props, ref) => {
+  const [activeTab, setActiveTab] = React.useState("find");
+  const [form, setForm] = React.useState({
+    gender: "",
+    age: "",
+    location: "",
+    experience: "",
+    role: ""
+  });
 
   const handleChange = (field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
-    setErrors((prev) => ({ ...prev, [field]: "" }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (validate()) {
-      // Xử lý gửi form ở đây
-      alert("Đặt lịch thành công!");
-    }
+    alert("Tìm kiếm thành công!");
   };
 
   return (
-    <section ref={ref} className="relative bg-[#F5D7B7] py-10 px-4 flex flex-col items-center">
+    <section ref={ref} className="relative  py-10 px-4 flex flex-col items-center">
        <Image
         src="/assets/iconAnimate/dog.gif"
         alt="Dog Icon"
