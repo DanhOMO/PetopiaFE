@@ -211,31 +211,7 @@ const CartPage = () => {
             </div>
 
             <div className="p-6">
-              {/* Add Coupon */}
-              <div className="border-b border-gray-200 pb-4 mb-4">
-                <button
-                  onClick={() => setShowCoupon(!showCoupon)}
-                  className="flex items-center justify-between w-full text-left text-[#7B4F35] font-semibold text-lg hover:text-[#C46C2B] transition-colors"
-                >
-                  <span>Thêm mã giảm giá</span>
-                  <ChevronDown
-                    className={`transition-transform ${showCoupon ? 'rotate-180' : ''}`}
-                    size={20}
-                  />
-                </button>
-                {showCoupon && (
-                  <div className="mt-4 flex gap-2">
-                    <input
-                      type="text"
-                      placeholder="Nhập mã giảm giá"
-                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7B4F35]"
-                    />
-                    <button className="px-6 py-2 bg-[#7B4F35] text-white rounded-lg hover:bg-[#C46C2B] transition-colors font-semibold">
-                      Áp dụng
-                    </button>
-                  </div>
-                )}
-              </div>
+             
 
               {/* Subtotal */}
               <div className="flex justify-between items-center py-4 border-b border-gray-200">
