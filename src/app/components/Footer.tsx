@@ -96,7 +96,7 @@ function Footer() {
             alt="Petopia Logo"
             width={48}
             height={48}
-            className="mr-3 drop-shadow-lg rounded-full border-2 border-white"
+            className="mr-3 drop-shadow-lg rounded-full"
           />
           <span className="text-3xl font-extrabold tracking-wide text-white dark:text-[#F5D7B7]">
             Petopia
