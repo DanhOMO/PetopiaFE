@@ -1,142 +1,121 @@
 "use client";
-import { Card } from "@/components/ui/card";
+import React from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { trpc } from "@/utils/trpc";
-
 import { Loading } from "../../components/loading";
 import { useCart } from "@/hooks/useCart";
-
-import { Heart, Search, ShoppingCart } from "lucide-react";
-import { Pet } from "@/server/routers/pet"; // Assuming this type is now camelCase
+import { ShoppingCart, Star, Heart } from "lucide-react";
+import { useRouter } from "next/navigation";
+import type { Pet } from "@/types/Pet";
 
 export default function ProductSection() {
   const { data: pets, isLoading, error } = trpc.pet.getAll.useQuery();
   const { data: petImgs } = trpc.petImg.getAll.useQuery();
   const { addToCart } = useCart();
+  const router = useRouter();
 
   const getThumbnail = (petId: string) => {
     const img = petImgs?.find((img) => img.petId === petId && img.isThumbnail);
-    return img?.imageUrl || "/imgs/imgPet/animal-8165466_1280.jpg";
+    return img?.imageUrl || "/assets/imgs/imgPet/animal-8165466_1280.jpg";
   };
 
   if (isLoading) return <Loading />;
   if (error) return <div className="text-center py-10 text-red-500">Lỗi: {error.message}</div>;
 
+  // Lấy 5 pets đầu tiên
+  const products = (pets || []).slice(0, 5);
+
   return (
-    <section className=" py-10 px-4 flex flex-col items-center relative">
-      {/* Title */}
-      <div className="mb-8 flex flex-col items-center">
-        <div className="relative">
-          <span className="inline-block bg-[#7B4F35] rounded-full px-10 py-3 text-white text-3xl font-bold shadow-lg border-4 border-white">
-            Sản Phẩm
-          </span>
+    <section className="py-16 px-8 bg-white">
+      <div className="mx-auto max-w-7xl">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h2 className="text-4xl text-[#8B4513] mb-4">SẢN PHẨM</h2>
         </div>
-      </div>
-      {/* Pets Grid */}
-      <div className="w-full max-w-6xl">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
-          {(pets || []).map((pet) => (
-            <div key={pet.petId} className="relative group cursor-pointer">
-              <Card className="relative h-80 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 border-0">
-                {/* Background Image */}
-                <div className="absolute inset-0">
-                  <Image
-                    src={getThumbnail(pet.petId)}
-                    alt={pet.name}
-                    fill
-                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+
+        {/* Product Cards - Layout từ ProductCard */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {products.map((product) => (
+            <div 
+              key={product.petId}
+              onClick={() => router.push(`/pets/${product.petId}`)}
+              className="group rounded-2xl bg-[#fff0f0] p-4 shadow-lg hover:shadow-xl hover:bg-[#FF6B6B] transition-all duration-300 relative cursor-pointer"
+            >
+              {/* Heart Icon - appears on hover */}
+              <div className="absolute top-6 left-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 cursor-pointer">
+                <div className="w-10 h-10 bg-[#FF6B6B] rounded-full flex items-center justify-center shadow-md hover:bg-[#102937] transition-colors duration-300">
+                  <Heart size={18} className="text-white" />
+                </div>
+              </div>
+
+              {/* Shopping Cart Icon - appears on hover */}
+              <div 
+                className="absolute top-6 left-18 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  addToCart({ pet: product as Pet, quantity: 1, img: getThumbnail(product.petId) });
+                }}
+              >
+                <div className="w-10 h-10 bg-[#FF6B6B] rounded-full flex items-center justify-center shadow-md hover:bg-[#102937] transition-colors duration-300">
+                  <ShoppingCart size={18} className="text-white" />
+                </div>
+              </div>
+
+              {/* Image Container */}
+              <div className="relative mb-4 overflow-hidden rounded-xl bg-[#F5E6D3]">
+                <Image
+                  src={getThumbnail(product.petId)}
+                  alt={product.name}
+                  width={300}
+                  height={256}
+                  className="h-64 w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+                {product.discountPrice && (
+                  <div className="absolute right-3 top-3 rounded-full bg-[#FF6B6B] px-3 py-1 text-xs font-bold text-white">
+                    GIẢM GIÁ
+                  </div>
+                )}
+              </div>
+
+              {/* Rating */}
+              <div className="mb-3 flex gap-1">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star
+                    key={i}
+                    size={16}
+                    className={i < 4 ? "fill-yellow-400 text-yellow-400" : "text-gray-300 group-hover:text-white"}
                   />
-                  {/* Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+                ))}
+              </div>
 
-                  {/* Hover Overlay with icons */}
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center -mt-25">
-                    <div className="flex gap-4">
-                      {/* Heart Icon */}
-                      <div className="relative group/heart cursor-pointer p-2">
-                        <div className="w-16 h-16 bg-white/90 group-hover/heart:bg-white rounded-full flex items-center justify-center shadow-lg transform group-hover/heart:scale-110 transition-all duration-300">
-                          <Heart className="w-6 h-6 text-[#7B4F35] group-hover/heart:fill-[#7B4F35] transition-colors duration-300" />
-                        </div>
-                        {/* Tooltip */}
-                        <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-pink-500 text-white px-3 py-1 rounded text-xs opacity-0 group-hover/heart:opacity-100 transition-opacity duration-300 whitespace-nowrap z-50 pointer-events-none">
-                          Yêu thích
-                        </div>
-                      </div>
+              {/* Product Name */}
+              <h3 className="mb-2 font-bold text-[#2d2d2d] group-hover:text-white text-lg line-clamp-2 transition-colors duration-300">{product.name}</h3>
 
-                      {/* Search Icon */}
-                      <div className="relative group/search cursor-pointer p-2">
-                        <div className="w-16 h-16 bg-white/90 group-hover/search:bg-white rounded-full flex items-center justify-center shadow-lg transform group-hover/search:scale-110 transition-all duration-300">
-                          <Search className="w-6 h-6 text-[#7B4F35] group-hover/search:fill-[#7B4F35] transition-colors duration-300" />
-                        </div>
-                        {/* Tooltip */}
-                        <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-pink-500 text-white px-3 py-1 rounded text-xs opacity-0 group-hover/search:opacity-100 transition-opacity duration-300 whitespace-nowrap z-50 pointer-events-none">
-                          Xem chi tiết
-                        </div>
-                      </div>
+              {/* Price */}
+              <div className="mb-4 flex items-center gap-2">
+                {product.discountPrice ? (
+                  <>
+                    <span className="text-[#2d2d2d] group-hover:text-white font-bold text-xl transition-colors duration-300">{product.discountPrice.toLocaleString('vi-VN')}₫</span>
+                    <span className="text-gray-400 group-hover:text-white line-through text-sm transition-colors duration-300">{product.price.toLocaleString('vi-VN')}₫</span>
+                  </>
+                ) : (
+                  <span className="text-[#2d2d2d] group-hover:text-white font-bold text-xl transition-colors duration-300">{product.price.toLocaleString('vi-VN')}₫</span>
+                )}
+              </div>
 
-                      {/* Cart Icon */}
-                      <div
-                        className="relative group/cart cursor-pointer p-2"
-                        onClick={() => addToCart({ pet: pet as Pet, quantity: 1, img: getThumbnail(pet.petId) })}
-                      >
-                        <div className="w-16 h-16 bg-white/90 group-hover/cart:bg-white rounded-full flex items-center justify-center shadow-lg transform group-hover/cart:scale-110 transition-all duration-300">
-                          <ShoppingCart className="w-6 h-6 text-[#7B4F35] group-hover/cart:fill-[#7B4F35] transition-colors duration-300" />
-                        </div>
-                        {/* Tooltip */}
-                        <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-pink-500 text-white px-3 py-1 rounded text-xs opacity-0 group-hover/cart:opacity-100 transition-opacity duration-300 whitespace-nowrap z-50 pointer-events-none">
-                          Thêm giỏ hàng
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Discount Badge */}
-                <div className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold z-10 shadow-lg">
-                  {pet.discountPrice ? "Giảm giá" : "Mới"}
-                </div>
-
-                {/* Content Overlay */}
-                <div className="absolute bottom-0 left-0 right-0 p-4 text-white z-10">
-                  <h3 className="font-bold text-lg mb-2 line-clamp-2">{pet.name}</h3>
-                  <div className="flex items-center gap-2 mb-3">
-                    {pet.discountPrice ? (
-                      <>
-                        <span className="text-[#F5D7B7] font-bold text-xl">{pet.discountPrice.toLocaleString()}₫</span>
-                        <span className="text-gray-300 line-through text-sm">{pet.price.toLocaleString()}₫</span>
-                      </>
-                    ) : (
-                      <span className="text-[#F5D7B7] font-bold text-xl">{pet.price.toLocaleString()}₫</span>
-                    )}
-                  </div>
-                  <p className="text-gray-200 text-sm mb-3">Mô tả</p>
-                  <button className="w-full bg-gradient-to-r from-[#7B4F35] to-[#6B3F25] hover:from-[#6B3F25] hover:to-[#5B2F15] text-white py-3 px-4 rounded-lg transition-all duration-300 font-bold text-lg shadow-lg transform hover:scale-105 flex items-center justify-center gap-2">
-                    MUA NGAY
-                    <span className="text-lg">›</span>
-                  </button>
-                </div>
-              </Card>
+              {/* Buy Now Button */}
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  router.push(`/pets/${product.petId}`);
+                }}
+                className="w-full bg-[#FF6B6B] group-hover:bg-[#102937] text-white py-3 px-4 rounded-lg transition-colors duration-300 font-semibold cursor-pointer hover:cursor-pointer"
+              >
+                Mua ngay
+              </button>
             </div>
           ))}
         </div>
-      </div>
-      {/* Pagination */}
-      <div className="flex gap-3 mt-12 justify-center">
-        <button className="w-10 h-10 rounded-full bg-white border-2 border-[#7B4F35] flex items-center justify-center text-[#7B4F35] hover:bg-[#7B4F35] hover:text-white transition-all duration-300 shadow-md font-bold">
-          ←
-        </button>
-        {[1, 2, 3, 4, 5].map((num) => (
-          <button
-            key={num}
-            className={`w-10 h-10 rounded-full ${num === 3 ? "bg-[#7B4F35] text-white shadow-lg" : "bg-white text-[#7B4F35] hover:bg-[#7B4F35] hover:text-white"} border-2 border-[#7B4F35] flex items-center justify-center transition-all duration-300 shadow-md font-bold`}
-          >
-            {num}
-          </button>
-        ))}
-        <button className="w-10 h-10 rounded-full bg-white border-2 border-[#7B4F35] flex items-center justify-center text-[#7B4F35] hover:bg-[#7B4F35] hover:text-white transition-all duration-300 shadow-md font-bold">
-          →
-        </button>
       </div>
     </section>
   );
