@@ -1,19 +1,18 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { trpc } from "@/utils/trpc"; 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";  
 import { Textarea } from  "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
-import { Article, ArticleComment } from "@/types/Article";
+import { ArticleComment } from "@/types/Article";
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 export default function ArticleDetailPage() {
   const params = useParams();
   const articleId = (params as { id: string })?.id as string | undefined;
-  const router = useRouter();
   const utils = trpc.useContext();
 
   const { data: article, isLoading: loadingArticle, error } =
@@ -31,106 +30,216 @@ export default function ArticleDetailPage() {
 
   const [content, setContent] = useState("");
 
+  // Features for pet articles based on the template
+  const petFeatures = [
+    { image: "/assets/imgs/imgArticle/tintuc1.png", label: "Huấn luyện mèo" },
+    { image: "/assets/imgs/imgArticle/tintuc2.png", label: "Đồ dùng thú cưng" },
+    { image: "/assets/imgs/imgArticle/tintuc4.png", label: "Vận chuyển an toàn" },
+    { image: "/assets/imgs/imgArticle/tintuc3.png", label: "Phối giống thú cưng" },
+  ];
+
+  // Bullet points for article highlights
+  const articleHighlights = [
+    "Hướng dẫn chi tiết về cách chăm sóc thú cưng hàng ngày một cách khoa học",
+    "Các lưu ý quan trọng về dinh dưỡng và sức khỏe cho từng loại thú cưng",
+    "Mẹo hay để tạo môi trường sống thoải mái và an toàn cho pet",
+    "Cách nhận biết các dấu hiệu bệnh tật sớm và xử lý kịp thời",
+    "Lịch trình tiêm phòng và khám sức khỏe định kỳ cho thú cưng",
+    "Tư vấn về việc lựa chọn thức ăn và chế độ dinh dưỡng phù hợp",
+  ];
  
   if (loadingArticle) return <div className="text-center py-20">Đang tải...</div>;
   if (error) return <div className="text-center py-10 text-red-500">Lỗi: {error.message}</div>;
- if (!article) {
+  if (!article) {
     return <div className="text-center py-20">Không tìm thấy bài viết.</div>;
   }
+
   return (
-    <div className="max-w-5xl mx-auto py-12 px-4">
-      <nav className="mb-6 text-sm text-gray-500">
+    <main className="min-h-screen bg-white">
+      {/* Back Button */}
+      <div className="mx-auto py-6" style={{ maxWidth: 'calc(100vw - 264px)', paddingLeft: '132px', paddingRight: '132px' }}>
+        <Link
+          href="/news"
+          className="inline-flex items-center gap-2 text-sm text-gray-600 transition-colors hover:text-gray-900"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Trở về tin tức
+        </Link>
+      </div>
 
-        <span className="mx-2">/</span>
-        <Link href="/news" className="text-gray-700 hover:underline">Trở về tin tức</Link>
-        <span className="mx-2">/</span>
-        <span className="text-gray-700">{article.title}</span>
-      </nav>
-
-      <article className="bg-white rounded-2xl shadow-md overflow-hidden">
-        <div className="w-full h-72 relative">
+      {/* Hero Section */}
+      <div className="mx-auto" style={{ maxWidth: 'calc(100vw - 280px)', paddingLeft: '140px', paddingRight: '140px' }}>
+        <div className="relative mb-8 overflow-hidden rounded-3xl">
           <Image
-            src={article.imageUrl || "/imgs/imgPet/animal-8165466_1280.jpg"}
+            src={article.imageUrl || "/assets/imgs/imgPet/animal-8165466_1280.jpg"}
             alt={article.title}
-            fill
-            className="object-cover"
+            width={1000}
+            height={600}
+            className="h-[400px] w-full object-cover"
+            style={{ maxWidth: '1000px', width: '100%' }}
           />
+
+          {/* Date Badge */}
+          <div className="absolute left-6 top-6 flex flex-col items-center justify-center rounded-xl bg-[#ff6b6b] px-4 py-3 text-white shadow-lg">
+            <span className="text-2xl font-bold leading-none">
+              {new Date(article.createdAt).getDate()}
+            </span>
+            <span className="text-sm font-medium leading-none">
+              Th{new Date(article.createdAt).getMonth() + 1}
+            </span>
+          </div>
         </div>
 
-        <div className="p-8">
-          <h1 className="text-3xl font-bold text-[#7B4F35] mb-4">{article.title}</h1>
+      </div>
 
-          <div className="flex items-center justify-between text-sm text-gray-500 mb-6">
-            <div> Tác giả: {article.authorId || "Ẩn danh"} </div>
-            <div>Ngày đăng: {new Date(article.createdAt).toLocaleDateString()}</div>
-          </div>
+      {/* Content Section with different padding */}
+      <div className="mx-auto" style={{ maxWidth: 'calc(100vw - 264px)', paddingLeft: '132px', paddingRight: '132px' }}>
+        {/* Title */}
+        <h1 className="mb-6 font-sans text-4xl font-bold leading-tight text-[#2d2d2d] md:text-5xl">
+          {article.title}
+        </h1>
 
-          <div className="prose max-w-none text-gray-800 mb-8">
-            {/* Nếu content chứa HTML, render bằng dangerouslySetInnerHTML, nếu plain text thì hiển thị trực tiếp */}
-            <div dangerouslySetInnerHTML={{ __html: article.content }} />
-          </div>
+        {/* Description - Extract from content or use a summary */}
+        <div className="mb-12 font-sans text-base leading-relaxed text-[#6b6b6b]">
+          <div dangerouslySetInnerHTML={{ __html: article.content.substring(0, 300) + "..." }} />
+        </div>
 
-          <section className="mt-8">
-            <h2 className="text-xl font-semibold text-[#7B4F35] mb-4">Bình luận ({comments?.length ?? 0})</h2>
-
-            <div className="space-y-4 mb-6">
-              {loadingComments ? (
-                <div>Đang tải bình luận...</div>
-              ) : (
-                (comments ?? []).map((c: ArticleComment) => (
-                  <Card key={c.commentId} className="p-4">
-                    <div className="flex items-start gap-4">
-                      <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-sm font-bold text-gray-600">
-                        {c.userId ? c.userId.charAt(0).toUpperCase() : "U"}
-                      </div>
-                      <div className="flex-1">
-                        <div className="text-sm text-gray-700 font-semibold">
-                          {c.userId ?? "Khách"}
-                          <span className="text-xs text-gray-400 ml-2">{new Date(c.createdAt).toLocaleString()}</span>
-                        </div>
-                        <div className="text-gray-600 mt-1">{c.content}</div>
-                      </div>
-                    </div>
-                  </Card>
-                ))
-              )}
-            </div>
-
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                if (!content.trim()) return;
-                createComment.mutate({
-                  commentId: `C${Date.now()}`,
-                  articleId: articleId || "",
-                  content: content.trim(),
-                });
-              }}
-              className="bg-gray-50 p-4 rounded-lg border"
+        {/* Feature Icons */}
+        <div className="mb-16 grid grid-cols-2 gap-6 md:grid-cols-4">
+          {petFeatures.map((feature, index) => (
+            <div
+              key={index}
+              className="flex flex-col items-center gap-3 rounded-2xl p-6 transition-transform hover:scale-105"
             >
-              <label className="text-sm font-medium text-gray-700">Thêm bình luận</label>
-              <Textarea
-                value={content}
-                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setContent(e.target.value)}
-                placeholder="Viết bình luận..."
-                className="mt-2 mb-3 h-24"
-              />
-              <div className="flex gap-3 justify-end">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setContent("")}
-                >
-                  Hủy
-                </Button>
-                <Button type="submit" className="bg-[#C46C2B]">
-                  Gửi bình luận
-                </Button>
+              <div className="w-16 h-16 relative">
+                <Image
+                  src={feature.image}
+                  alt={feature.label}
+                  fill
+                  className="object-contain"
+                />
               </div>
-            </form>
-          </section>
+              <span className="text-center font-sans text-sm font-medium text-[#2d2d2d]">
+                {feature.label}
+              </span>
+            </div>
+          ))}
         </div>
-      </article>
-    </div>
+
+        {/* Two Column Content */}
+        <div className="mb-16 grid gap-8 md:grid-cols-2">
+          {/* Left Column - Image */}
+          <div className="overflow-hidden rounded-2xl h-[400px]">
+            <Image
+              src={article.imageUrl || "/assets/imgs/imgPet/animal-8165466_1280.jpg"}
+              alt="Nội dung bài viết"
+              width={400}
+              height={400}
+              className="h-full w-full object-cover"
+            />
+          </div>
+
+          {/* Right Column - Bullet Points */}
+          <div className="flex flex-col justify-center space-y-4 h-[400px]">
+            {articleHighlights.map((point, index) => (
+              <div key={index} className="flex items-start gap-3">
+                <div className="mt-1 flex-shrink-0">
+                  <Image
+                    src="/assets/svg/chanmeo.svg"
+                    alt="Paw icon"
+                    width={16}
+                    height={16}
+                    className="w-4 h-4 object-contain"
+                    style={{ filter: 'brightness(0) saturate(100%) invert(38%) sepia(95%) saturate(7471%) hue-rotate(349deg) brightness(102%) contrast(101%)' }}
+                  />
+                </div>
+                <p className="font-sans text-sm leading-relaxed text-[#6b6b6b]">{point}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Full Article Content */}
+        <div className="mb-16 prose max-w-none">
+          <div dangerouslySetInnerHTML={{ __html: article.content }} />
+        </div>
+
+        {/* Comments Section */}
+        <section className="mt-16">
+          <h2 className="text-2xl font-bold text-[#2d2d2d] mb-6">
+            Bình luận ({comments?.length ?? 0})
+          </h2>
+
+          <div className="space-y-4 mb-8">
+            {loadingComments ? (
+              <div className="text-center py-8">
+                <p className="text-gray-600">Đang tải bình luận...</p>
+              </div>
+            ) : (
+              (comments ?? []).map((c: ArticleComment) => (
+                <Card key={c.commentId} className="p-4 border border-gray-200 rounded-lg">
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 bg-[#ff6b6b] rounded-full flex items-center justify-center text-white font-bold text-sm">
+                      {c.userId ? c.userId.charAt(0).toUpperCase() : "U"}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-semibold text-[#2d2d2d]">
+                          {c.userId ?? "Khách"}
+                        </span>
+                        <span className="text-xs text-gray-500">
+                          {new Date(c.createdAt).toLocaleString('vi-VN')}
+                        </span>
+                      </div>
+                      <div className="text-gray-700">{c.content}</div>
+                    </div>
+                  </div>
+                </Card>
+              ))
+            )}
+          </div>
+
+          {/* Comment Form */}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (!content.trim()) return;
+              createComment.mutate({
+                commentId: `C${Date.now()}`,
+                articleId: articleId || "",
+                content: content.trim(),
+              });
+            }}
+            className="bg-gray-50 p-6 rounded-lg border mb-10"
+          >
+            <label className="text-lg font-medium text-[#2d2d2d] mb-4 block">
+              Thêm bình luận
+            </label>
+            <Textarea
+              value={content}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setContent(e.target.value)}
+              placeholder="Viết bình luận..."
+              className="mb-4 h-24"
+            />
+            <div className="flex gap-3 justify-end">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setContent("")}
+              >
+                Hủy
+              </Button>
+              <Button 
+                type="submit" 
+                className="bg-[#ff6b6b] hover:bg-[#ff5252] text-white"
+                disabled={createComment.isPending}
+              >
+                {createComment.isPending ? "Đang gửi..." : "Gửi bình luận"}
+              </Button>
+            </div>
+          </form>
+        </section>
+      </div>
+    </main>
   );
 }

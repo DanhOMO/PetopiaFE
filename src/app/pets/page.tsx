@@ -1,14 +1,27 @@
 "use client";
 import React from "react";
-import { Card } from "@/components/ui/card";
+import { useState } from "react";
 import { trpc } from "../../utils/trpc";
 import Image from "next/image";
 import { Loading } from "../components/loading";
 import { PetDetailModal } from "@/app/components/pet/PetDetailModal";
 import { useCart } from "@/hooks/useCart";
+import { Search, ChevronDown } from "lucide-react";
+import CategoryFilter from "@/app/pets/_components/CategoryFilter";
+import PriceRangeFilter from "@/app/pets/_components/PriceRangeFilter";
+import ProductCard from "@/app/pets/_components/ProductCard";
 
-import type { Pet } from "@/types/Pet"; // Assuming this type is now camelCase
-import { Heart, Search, ShoppingCart } from "lucide-react";
+import type { Pet } from "@/types/Pet";
+
+const CATEGORIES = [
+  { name: "Chim", count: 3 },
+  { name: "Mèo", count: 8 },
+  { name: "Đồ chơi nhai", count: 2 },
+  { name: "Chó", count: 11 },
+  { name: "Nội thất", count: 1 },
+  { name: "Chuột hamster", count: 2 },
+  { name: "Dược phẩm", count: 1 },
+];
 
 export default function PetsPage() {
   const pageSize = 9;
@@ -19,6 +32,22 @@ export default function PetsPage() {
 
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [selectedPetId, setSelectedPetId] = React.useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState("default");
+
+  // Calculate max price from pets data
+  const maxPrice = pets && pets.length > 0 ? Math.max(...pets.map(pet => pet.discountPrice || pet.price)) : 10000000;
+  
+  // Always start from 0 and go to maxPrice
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, maxPrice]);
+
+  // Update price range when pets data changes
+  React.useEffect(() => {
+    if (pets && pets.length > 0) {
+      setPriceRange([0, maxPrice]);
+    }
+  }, [pets, maxPrice]);
 
   const handleOpenModal = (petId: string) => {
     console.log("Opening modal for petId:", petId);
@@ -41,126 +70,155 @@ export default function PetsPage() {
   const pagedPets = pets?.slice((page - 1) * pageSize, page * pageSize) || [];
 
   return (
-    <div className="w-full max-w-6xl mx-auto py-10">
-      <h1 className="text-3xl font-bold mb-8 text-center">Danh sách thú cưng</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
-        {pagedPets.map((pet) => (
-          <div key={pet.petId} className="relative group cursor-pointer">
-            <Card className="relative h-80 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 border-0">
-              {/* Background Image */}
-              <div className="absolute inset-0">
-                <Image
-                  src={getThumbnail(pet.petId)}
-                  alt={pet.name}
-                  fill
-                  className="object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-                {/* Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
-
-                {/* Hover Overlay with icons */}
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center -mt-25">
-                  <div className="flex gap-4">
-                    {/* Heart Icon */}
-                    <div className="relative group/heart cursor-pointer p-2">
-                      <div className="w-16 h-16 bg-white/90 group-hover/heart:bg-white rounded-full flex items-center justify-center shadow-lg transform group-hover/heart:scale-110 transition-all duration-300">
-                        <Heart className="w-6 h-6 text-[#7B4F35] group-hover/heart:fill-[#7B4F35] transition-colors duration-300" />
-                      </div>
-                      <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-pink-500 text-white px-3 py-1 rounded text-xs opacity-0 group-hover/heart:opacity-100 transition-opacity duration-300 whitespace-nowrap z-50 pointer-events-none">
-                        Yêu thích
-                      </div>
-                    </div>
-
-                    {/* Search Icon */}
-                    <div
-                      className="relative group/search cursor-pointer p-2"
-                      onClick={() => handleOpenModal(pet.petId)}
-                    >
-                      <div className="w-16 h-16 bg-white/90 group-hover/search:bg-white rounded-full flex items-center justify-center shadow-lg transform group-hover/search:scale-110 transition-all duration-300">
-                        <Search className="w-6 h-6 text-[#7B4F35] group-hover/search:fill-[#7B4F35] transition-colors duration-300" />
-                      </div>
-                      <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-pink-500 text-white px-3 py-1 rounded text-xs opacity-0 group-hover/search:opacity-100 transition-opacity duration-300 whitespace-nowrap z-50 pointer-events-none">
-                        Xem chi tiết
-                      </div>
-                    </div>
-
-                    {/* Cart Icon */}
-                    <div
-                      className="relative group/cart cursor-pointer p-2"
-                      onClick={() => addToCart({ pet: pet as Pet, quantity: 1, img: getThumbnail(pet.petId) })}
-                    >
-                      <div className="w-16 h-16 bg-white/90 group-hover/cart:bg-white rounded-full flex items-center justify-center shadow-lg transform group-hover/cart:scale-110 transition-all duration-300">
-                        <ShoppingCart className="w-6 h-6 text-[#7B4F35] group-hover/cart:fill-[#7B4F35] transition-colors duration-300" />
-                      </div>
-                      <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-pink-500 text-white px-3 py-1 rounded text-xs opacity-0 group-hover/cart:opacity-100 transition-opacity duration-300 whitespace-nowrap z-50 pointer-events-none">
-                        Thêm giỏ hàng
-                      </div>
-                    </div>
-                  </div>
+    <>
+      {/* Background section with full width */}
+      <div className="relative py-24 w-full">
+        <div className="absolute inset-0">
+          <Image 
+            src="/assets/imgs/imgBackgroundTitle/bc-shop-details.jpg"
+            alt="Pets Background"
+            fill
+            className="w-full h-full object-cover object-top"
+          />
+          <div className="absolute inset-0 bg-black/20"></div>
+        </div>
+        <div className="container mx-auto px-4 relative z-10">
+          <h1 
+            className="text-center font-bold text-6xl text-white drop-shadow-lg"
+          >
+            Thú cưng
+          </h1>
+        </div>
+      </div>
+      
+      {/* Main Content Section */}
+      <div className="mx-auto max-w-7xl px-6 py-8">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
+          {/* Sidebar Filters */}
+          <aside className="lg:col-span-1">
+            {/* Search Bar */}
+            <div className="mb-8">
+              <div className="flex gap-3">
+                <div className="flex-1 relative">
+                  <input
+                    type="text"
+                    placeholder="Tìm kiếm sản phẩm..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full rounded-full border border-gray-300 bg-white px-6 py-3 text-[#2d2d2d] placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#FF6B6B] focus:border-transparent"
+                  />
                 </div>
-              </div>
-
-              {/* Discount Badge */}
-              <div className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold z-10 shadow-lg">
-                {pet.discountPrice ? "Giảm giá" : "Mới"}
-              </div>
-
-              {/* Content Overlay */}
-              <div className="absolute bottom-0 left-0 right-0 p-4 text-white z-10">
-                <h3 className="font-bold text-lg mb-2 line-clamp-2">{pet.name}</h3>
-                <div className="flex items-center gap-2 mb-3">
-                  {pet.discountPrice ? (
-                    <>
-                      <span className="text-[#F5D7B7] font-bold text-xl">{pet.discountPrice.toLocaleString()}₫</span>
-                      <span className="text-gray-300 line-through text-sm">{pet.price.toLocaleString()}₫</span>
-                    </>
-                  ) : (
-                    <span className="text-[#F5D7B7] font-bold text-xl">{pet.price.toLocaleString()}₫</span>
-                  )}
-                </div>
-                <p className="text-gray-200 text-sm mb-3">Mô tả</p>
-                <button className="w-full bg-gradient-to-r from-[#7B4F35] to-[#6B3F25] hover:from-[#6B3F25] hover:to-[#5B2F15] text-white py-3 px-4 rounded-lg transition-all duration-300 font-bold text-lg shadow-lg transform hover:scale-105 flex items-center justify-center gap-2">
-                  MUA NGAY
-                  <span className="text-lg">›</span>
+                <button className="rounded-full bg-[#FF6B6B] p-3 text-white hover:bg-[#FF5555] transition-colors">
+                  <Search size={20} />
                 </button>
               </div>
-            </Card>
-          </div>
-        ))}
-      </div>
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex gap-3 mt-12 justify-center">
-          <button
-            className="w-10 h-10 rounded-full bg-white border-2 border-[#7B4F35] flex items-center justify-center text-[#7B4F35] hover:bg-[#7B4F35] hover:text-white transition-all duration-300 shadow-md font-bold disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={page === 1}
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-          >
-            ←
-          </button>
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map((num) => (
-            <button
-              key={num}
-              className={`w-10 h-10 rounded-full ${num === page ? "bg-[#7B4F35] text-white shadow-lg" : "bg-white text-[#7B4F35] hover:bg-[#7B4F35] hover:text-white"} border-2 border-[#7B4F35] flex items-center justify-center transition-all duration-300 shadow-md font-bold`}
-              onClick={() => setPage(num)}
-            >
-              {num}
-            </button>
-          ))}
-          <button
-            className="w-10 h-10 rounded-full bg-white border-2 border-[#7B4F35] flex items-center justify-center text-[#7B4F35] hover:bg-[#7B4F35] hover:text-white transition-all duration-300 shadow-md font-bold disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={page === totalPages}
-            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-          >
-            →
-          </button>
+            </div>
+
+            {/* Categories */}
+            <div className="mb-8">
+              <h2 className="mb-4 rounded-2xl bg-[#F5E6D3] px-6 py-3 text-lg font-bold text-[#2d2d2d]">
+                Mua theo danh mục
+              </h2>
+              <CategoryFilter
+                categories={CATEGORIES}
+                selectedCategory={selectedCategory}
+                onSelectCategory={setSelectedCategory}
+              />
+            </div>
+
+            {/* Price Range */}
+            <div>
+              <h2 className="mb-4 rounded-2xl bg-[#F5E6D3] px-6 py-3 text-lg font-bold text-[#2d2d2d]">
+                Khoảng giá
+              </h2>
+              <PriceRangeFilter priceRange={priceRange} onPriceChange={setPriceRange} maxPrice={maxPrice} minPrice={0} />
+            </div>
+          </aside>
+
+          {/* Main Content */}
+          <main className="lg:col-span-3">
+            {/* Top Bar */}
+            <div className="mb-8 flex items-center justify-between rounded-2xl bg-[#F5E6D3] px-6 py-4">
+              <span className="text-[#2d2d2d] font-medium">Hiển thị 1–{Math.min(pageSize, pagedPets.length)} trong {total} kết quả</span>
+              <div className="flex items-center gap-4">
+                <button className="flex items-center gap-2 text-[#2d2d2d] hover:text-[#FF6B6B] transition-colors">
+                  <span>Bộ lọc</span>
+                  <ChevronDown size={18} />
+                </button>
+                <div className="relative">
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="appearance-none rounded-lg border border-gray-300 bg-white px-4 py-2 pr-8 text-[#2d2d2d] focus:outline-none focus:ring-2 focus:ring-[#FF6B6B]"
+                  >
+                    <option value="default">Sắp xếp mặc định</option>
+                    <option value="price-low">Giá: Thấp đến cao</option>
+                    <option value="price-high">Giá: Cao đến thấp</option>
+                    <option value="rating">Đánh giá cao nhất</option>
+                    <option value="latest">Mới nhất</option>
+                  </select>
+                  <ChevronDown
+                    size={16}
+                    className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-gray-500"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Product Grid */}
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-8">
+              {pagedPets.map((pet) => (
+                <ProductCard
+                  key={pet.petId}
+                  product={{
+                    petId: pet.petId,
+                    name: pet.name,
+                    price: pet.price,
+                    discountPrice: pet.discountPrice,
+                    image: getThumbnail(pet.petId),
+                    isSale: !!pet.discountPrice
+                  }}
+                  onAddToCart={() => addToCart({ pet: pet as Pet, quantity: 1, img: getThumbnail(pet.petId) })}
+                />
+              ))}
+            </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="flex gap-3 justify-center">
+                <button
+                  className="w-10 h-10 rounded-full bg-white border-2 border-gray-300 flex items-center justify-center text-gray-600 hover:border-[#FF6B6B] hover:text-[#FF6B6B] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={page === 1}
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                >
+                  ←
+                </button>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((num) => (
+                  <button
+                    key={num}
+                    className={`w-10 h-10 rounded-full ${num === page ? "bg-[#FF6B6B] text-white" : "bg-white text-gray-600 hover:border-[#FF6B6B] hover:text-[#FF6B6B]"} border-2 ${num === page ? "border-[#FF6B6B]" : "border-gray-300"} flex items-center justify-center transition-all duration-300`}
+                    onClick={() => setPage(num)}
+                  >
+                    {num}
+                  </button>
+                ))}
+                <button
+                  className="w-10 h-10 rounded-full bg-white border-2 border-gray-300 flex items-center justify-center text-gray-600 hover:border-[#FF6B6B] hover:text-[#FF6B6B] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={page === totalPages}
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                >
+                  →
+                </button>
+              </div>
+            )}
+          </main>
         </div>
-      )}
+      </div>
       <PetDetailModal
         open={isModalOpen}
         petId={selectedPetId || ""}
         onOpenChange={(open) => setIsModalOpen(open)}
       />
-    </div>
+    </>
   );
 }
