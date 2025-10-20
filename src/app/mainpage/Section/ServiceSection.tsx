@@ -2,7 +2,10 @@
 
 import React from "react";
 import Image from "next/image";
-import Link from "next/link";
+import { trpc } from "../../../utils/trpc";
+import { Loading } from "../../components/loading";
+import { useState } from "react";
+import type {Service} from "@/types/Service"
 
 export default function ServiceSection() {
   const services = [
@@ -74,7 +77,24 @@ export default function ServiceSection() {
             </div>
           ))}
         </div>
-      </div>
-    </section>
-  )
+        {/* Pagination */}
+        <div className="flex gap-3 mt-12 justify-center">
+          <button className="w-10 h-10 rounded-full bg-white border-2 border-[#7B4F35] flex items-center justify-center text-[#7B4F35] hover:bg-[#7B4F35] hover:text-white transition-all duration-300 shadow-md font-bold">
+            ←
+          </button>
+          {[1,2,3,4,5].map((num) => (
+            <button
+              key={num}
+              className={`w-10 h-10 rounded-full ${num === 1 ? "bg-[#7B4F35] text-white shadow-lg" : "bg-white text-[#7B4F35] hover:bg-[#7B4F35] hover:text-white"} border-2 border-[#7B4F35] flex items-center justify-center transition-all duration-300 shadow-md font-bold`}
+            >
+              {num}
+            </button>
+          ))}
+          <button className="w-10 h-10 rounded-full bg-white border-2 border-[#7B4F35] flex items-center justify-center text-[#7B4F35] hover:bg-[#7B4F35] hover:text-white transition-all duration-300 shadow-md font-bold">
+            →
+          </button>
+        </div>
+      </section>
+    </>
+  );
 }

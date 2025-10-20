@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Roboto } from "next/font/google";
+// import css global
 import "./globals.css";
 import { TRPCProvider } from "@/app/providers";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
+import { AuthProvider } from "@/context/AuthContext";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -36,7 +38,8 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${roboto.variable} antialiased`}
       >
         <TRPCProvider>
-         <div className="font-sans flex flex-col min-h-screen w-full">
+          <AuthProvider>
+             <div className="font-sans flex flex-col min-h-screen w-full">
                {/* Header */}
                <header className="w-full sticky top-0 z-50 shadow-lg">
                  <Header />
@@ -52,6 +55,7 @@ export default function RootLayout({
                  <Footer />
                </footer>
              </div>
+          </AuthProvider>
         </TRPCProvider>
       </body>
     </html>

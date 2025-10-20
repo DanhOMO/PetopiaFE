@@ -14,10 +14,11 @@ export type User = {
   fullName?: string | null;
   phoneNumber?: string | null;
   role: z.infer<typeof UserRole>;
-  loyaltyPoints: number;
+  
   isActive: boolean;
   createdAt: string; // DATETIME -> ISO string
   updatedAt: string; // DATETIME -> ISO string
+  avatarUrl?: string; // URL hình đại diện
 };
 
 // Dữ liệu mẫu - Thay thế bằng logic truy vấn CSDL của bạn
@@ -30,10 +31,11 @@ const mockUsers: User[] = [
     fullName: "John Doe",
     phoneNumber: "0912345678",
     role: "CUSTOMER",
-    loyaltyPoints: 150,
+    
     isActive: true,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
+    avatarUrl: "/assets/imgs/imgAvatar/avatar2.png",
   },
   {
     userId: "U002",
@@ -43,10 +45,11 @@ const mockUsers: User[] = [
     fullName: "Admin Power",
     phoneNumber: "0987654321",
     role: "ADMIN",
-    loyaltyPoints: 0,
+    
     isActive: true,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
+    avatarUrl: "/assets/imgs/imgAvatar/avatar1.png",
   },
 ];
 
@@ -140,7 +143,7 @@ export const userRouter = router({
         fullName: input.fullName || null,
         phoneNumber: input.phoneNumber || null,
         role: "CUSTOMER", // Mặc định vai trò là khách hàng
-        loyaltyPoints: 0, // Mặc định điểm tích lũy là 0
+        
         isActive: true, // Mặc định tài khoản được kích hoạt
         createdAt: now,
         updatedAt: now,
