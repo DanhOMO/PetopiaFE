@@ -6,9 +6,10 @@ import { Heart, Eye, Minus, Plus, Star, Clock, Users, ArrowLeft } from "lucide-r
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { trpc } from "@/utils/trpc"
-import { useCart } from "@/hooks/useCart"
+import { useCart } from "@/store/useCartStore"
 import { Loading } from "@/app/components/loading"
 import Image from "next/image"
+import MiniCart from "@/app/carts/_components/MiniCart"
 
 export default function PetDetailPage() {
   const params = useParams()
@@ -18,7 +19,7 @@ export default function PetDetailPage() {
   const [quantity, setQuantity] = useState(1)
   const [isWishlisted, setIsWishlisted] = useState(false)
   
-  const { addToCart } = useCart()
+  const { addItem, openMiniCart } = useCart()
   
   // Fetch pet data
   const { data: pet, isLoading: petLoading, error } = trpc.pet.getById.useQuery({ petId: petId })
@@ -57,21 +58,22 @@ export default function PetDetailPage() {
   const allImages = petImages.length > 0 ? petImages.map((img: any) => img.imageUrl) : [thumbnailImage]
 
   const handleAddToCart = () => {
-    addToCart({ 
+    addItem({ 
       pet: pet, 
       quantity: quantity, 
       img: thumbnailImage 
     })
+    openMiniCart()
   }
 
   const handleBuyNow = () => {
-    addToCart({ 
+    addItem({ 
       pet: pet, 
       quantity: quantity, 
       img: thumbnailImage 
     })
     // Redirect to cart or checkout page
-    router.push('/cart')
+    router.push('/carts')
   }
 
   return (
@@ -259,6 +261,7 @@ export default function PetDetailPage() {
           </div>
         </div>
       </div>
+      <MiniCart />
     </main>
   )
 }
