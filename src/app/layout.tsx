@@ -46,7 +46,7 @@ export default function RootLayout({
                </header>
          
                {/* Main content */}
-               <main className="flex-1 bg-[#F5D7B7] w-full">
+               <main className="flex-1 bg-white w-full">
                  {children}
                </main>
          

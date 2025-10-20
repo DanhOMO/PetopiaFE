@@ -180,6 +180,24 @@ export default function AboutPage() {
 
   return (
     <div className="min-h-screen ">
+      {/* Title Section with Background */}
+      <div className="relative py-24">
+        <div className="absolute inset-0">
+          <img 
+            src="/assets/imgs/imgBackgroundTitle/bc-store-loc.jpg"
+            alt="About Background"
+            className="w-full h-full object-cover object-top"
+          />
+          <div className="absolute inset-0 bg-black/20"></div>
+        </div>
+        <div className="container mx-auto px-4 relative z-10">
+          <h1 
+            className="text-center font-bold text-6xl text-white drop-shadow-lg"
+          >
+            Về Chúng Tôi
+          </h1>
+        </div>
+      </div>
  
       <div className="about-container mx-auto py-8 px-10 space-y-12">
         {/* Our Story Section */}
