@@ -5,7 +5,6 @@ import Image from "next/image";
 import { trpc } from "../../../utils/trpc";
 import { Loading } from "../../components/loading";
 import { useState } from "react";
-import { ServiceDetailModal } from "../../components/service/ServiceDetailModal";
 import type {Service} from "@/types/Service"
 
 export default function ServiceSection() {
@@ -80,7 +79,6 @@ export default function ServiceSection() {
           </button>
         </div>
       </section>
-      <ServiceDetailModal open={open} onOpenChange={setOpen} service={selectedService as Service} />
     </>
   );
 }
