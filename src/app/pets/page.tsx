@@ -5,11 +5,12 @@ import { trpc } from "../../utils/trpc";
 import Image from "next/image";
 import { Loading } from "../components/loading";
 import { PetDetailModal } from "@/app/components/pet/PetDetailModal";
-import { useCart } from "@/hooks/useCart";
+import { useCart } from "@/store/useCartStore";
 import { Search, ChevronDown } from "lucide-react";
 import CategoryFilter from "@/app/pets/_components/CategoryFilter";
 import PriceRangeFilter from "@/app/pets/_components/PriceRangeFilter";
 import ProductCard from "@/app/pets/_components/ProductCard";
+import MiniCart from "@/app/carts/_components/MiniCart";
 
 import type { Pet } from "@/types/Pet";
 
@@ -28,7 +29,7 @@ export default function PetsPage() {
   const [page, setPage] = React.useState(1);
   const { data: pets, isLoading, error } = trpc.pet.getAll.useQuery();
   const { data: petImgs } = trpc.petImg.getAll.useQuery();
-  const { addToCart } = useCart();
+  const { addItem, openMiniCart } = useCart();
 
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [selectedPetId, setSelectedPetId] = React.useState<string | null>(null);
@@ -178,7 +179,10 @@ export default function PetsPage() {
                     image: getThumbnail(pet.petId),
                     isSale: !!pet.discountPrice
                   }}
-                  onAddToCart={() => addToCart({ pet: pet as Pet, quantity: 1, img: getThumbnail(pet.petId) })}
+                  onAddToCart={() => {
+                    addItem({ pet: pet as Pet, quantity: 1, img: getThumbnail(pet.petId) });
+                    openMiniCart();
+                  }}
                 />
               ))}
             </div>
@@ -219,6 +223,7 @@ export default function PetsPage() {
         petId={selectedPetId || ""}
         onOpenChange={(open) => setIsModalOpen(open)}
       />
+      <MiniCart />
     </>
   );
 }
