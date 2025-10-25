@@ -3,15 +3,16 @@ import React from "react";
 import Image from "next/image";
 import { trpc } from "@/utils/trpc";
 import { Loading } from "../../components/loading";
-import { useCart } from "@/hooks/useCart";
 import { ShoppingCart, Star, Heart } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useCart } from "@/store/useCartStore";
+import MiniCart from "@/app/carts/_components/MiniCart";
 import type { Pet } from "@/types/Pet";
 
 export default function ProductSection() {
   const { data: pets, isLoading, error } = trpc.pet.getAll.useQuery();
   const { data: petImgs } = trpc.petImg.getAll.useQuery();
-  const { addToCart } = useCart();
+  const { addItem, openMiniCart } = useCart();
   const router = useRouter();
 
   const getThumbnail = (petId: string) => {
@@ -53,7 +54,8 @@ export default function ProductSection() {
                 className="absolute top-6 left-18 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 cursor-pointer"
                 onClick={(e) => {
                   e.stopPropagation();
-                  addToCart({ pet: product as Pet, quantity: 1, img: getThumbnail(product.petId) });
+                  addItem({ pet: product as Pet, quantity: 1, img: getThumbnail(product.petId) });
+                  openMiniCart();
                 }}
               >
                 <div className="w-10 h-10 bg-[#FF6B6B] rounded-full flex items-center justify-center shadow-md hover:bg-[#102937] transition-colors duration-300">
@@ -117,6 +119,7 @@ export default function ProductSection() {
           ))}
         </div>
       </div>
+      <MiniCart />
     </section>
   );
 }

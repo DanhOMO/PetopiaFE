@@ -19,7 +19,8 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useCart } from "@/hooks/useCart";
+import { useCart } from "@/store/useCartStore";
+
 
 const leftLinks = [
   { label: "TRANG CHỦ", href: "/" },
@@ -35,7 +36,7 @@ const rightLinks = [
 
 export default function Header() {
   const pathname = usePathname();
-  const { getTotalQuantity } = useCart();
+  const { totalItems } = useCart();
 
   // Giả lập trạng thái đăng nhập
   const [user] = React.useState<null | { name: string; avatar?: string }>(null);
@@ -137,9 +138,11 @@ export default function Header() {
             className="rounded-full bg-white hover:bg-[#F5D7B7] transition-all duration-300 hover:scale-110 shadow-md group cursor-pointer"
           >
             <ShoppingCart size={20} className="text-[#7B4F35] group-hover:text-[#6B3F25]" />
-            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
-              {getTotalQuantity()}
-            </span>
+            {totalItems > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                {totalItems}
+              </span>
+            )}
           </Button>
         </Link>
 

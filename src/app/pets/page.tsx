@@ -4,7 +4,6 @@ import { useState } from "react";
 import { trpc } from "../../utils/trpc";
 import Image from "next/image";
 import { Loading } from "../components/loading";
-import { PetDetailModal } from "@/app/components/pet/PetDetailModal";
 import { useCart } from "@/store/useCartStore";
 import { Search, ChevronDown } from "lucide-react";
 import CategoryFilter from "@/app/pets/_components/CategoryFilter";
@@ -50,12 +49,7 @@ export default function PetsPage() {
     }
   }, [pets, maxPrice]);
 
-  const handleOpenModal = (petId: string) => {
-    console.log("Opening modal for petId:", petId);
-    setSelectedPetId(petId);
-    setIsModalOpen(true);
-    
-  };
+  
 
   if (isLoading) return <Loading />;
   if (error) return <div className="text-center py-10 text-red-500">Lỗi: {error.message}</div>;
@@ -218,11 +212,7 @@ export default function PetsPage() {
           </main>
         </div>
       </div>
-      <PetDetailModal
-        open={isModalOpen}
-        petId={selectedPetId || ""}
-        onOpenChange={(open) => setIsModalOpen(open)}
-      />
+     
       <MiniCart />
     </>
   );
