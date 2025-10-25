@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useState } from "react";
-import { trpc } from "../../utils/trpc";
+import useSWR from "swr";
 import Image from "next/image";
 import { Loading } from "../components/loading";
 import { useCart } from "@/store/useCartStore";
@@ -23,18 +23,34 @@ const CATEGORIES = [
   { name: "Dược phẩm", count: 1 },
 ];
 
+interface PetResponse {
+  content: Pet[];
+  totalElements: number;
+  page: number;
+  size: number;
+}
+
+// Fetcher: Hàm fetch data từ API
+const fetcher = (url: string) => fetch(url).then(res => res.json());
+
 export default function PetsPage() {
+  const apiUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const pageSize = 9;
-  const [page, setPage] = React.useState(1);
-  const { data: pets, isLoading, error } = trpc.pet.getAll.useQuery();
-  const { data: petImgs } = trpc.petImg.getAll.useQuery();
+  const [page, setPage] = React.useState(0);
   const { addItem, openMiniCart } = useCart();
 
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const [selectedPetId, setSelectedPetId] = React.useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("default");
+
+  // SWR: Tự động fetch khi page thay đổi
+  const { data, error, isLoading } = useSWR<PetResponse>(
+    `${apiUrl}/pets`,
+    fetcher
+  );
+
+  const pets = data?.content || [];
+  const totalElements = data?.totalElements || 0;
 
   // Calculate max price from pets data
   const maxPrice = pets && pets.length > 0 ? Math.max(...pets.map(pet => pet.discountPrice || pet.price)) : 10000000;
@@ -49,20 +65,19 @@ export default function PetsPage() {
     }
   }, [pets, maxPrice]);
 
-  
-
   if (isLoading) return <Loading />;
   if (error) return <div className="text-center py-10 text-red-500">Lỗi: {error.message}</div>;
 
   // Lấy thumbnail cho từng pet
-  const getThumbnail = (petId: string) => {
-    const img = petImgs?.find((img) => img.petId === petId && img.isThumbnail);
-    return img?.imageUrl || "/imgs/imgPet/animal-8165466_1280.jpg";
+  const getThumbnail = (petId: string, mainImageUrl: string | null) => {
+    if (mainImageUrl) {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8081";
+      return `${apiUrl}/images/${mainImageUrl}`;
+    }
+    return "/imgs/imgPet/animal-8165466_1280.jpg";
   };
 
-  const total = pets?.length || 0;
-  const totalPages = Math.ceil(total / pageSize);
-  const pagedPets = pets?.slice((page - 1) * pageSize, page * pageSize) || [];
+  const totalPages = Math.ceil(totalElements / pageSize);
 
   return (
     <>
@@ -134,7 +149,7 @@ export default function PetsPage() {
           <main className="lg:col-span-3">
             {/* Top Bar */}
             <div className="mb-8 flex items-center justify-between rounded-2xl bg-[#F5E6D3] px-6 py-4">
-              <span className="text-[#2d2d2d] font-medium">Hiển thị 1–{Math.min(pageSize, pagedPets.length)} trong {total} kết quả</span>
+              <span className="text-[#2d2d2d] font-medium">Hiển thị {pets.length > 0 ? ((page * pageSize) + 1) : 0}–{Math.min((page + 1) * pageSize, totalElements)} trong {totalElements} kết quả</span>
               <div className="flex items-center gap-4">
                 <button className="flex items-center gap-2 text-[#2d2d2d] hover:text-[#FF6B6B] transition-colors">
                   <span>Bộ lọc</span>
@@ -162,19 +177,19 @@ export default function PetsPage() {
 
             {/* Product Grid */}
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-8">
-              {pagedPets.map((pet) => (
+              {pets.map((pet) => (
                 <ProductCard
                   key={pet.petId}
                   product={{
                     petId: pet.petId,
                     name: pet.name,
                     price: pet.price,
-                    discountPrice: pet.discountPrice,
-                    image: getThumbnail(pet.petId),
+                    discountPrice: pet.discountPrice || undefined,
+                    image: getThumbnail(pet.petId, pet.mainImageUrl || null),
                     isSale: !!pet.discountPrice
                   }}
                   onAddToCart={() => {
-                    addItem({ pet: pet as Pet, quantity: 1, img: getThumbnail(pet.petId) });
+                    addItem({ pet: pet, quantity: 1, img: getThumbnail(pet.petId, pet.mainImageUrl || null) });
                     openMiniCart();
                   }}
                 />
@@ -186,24 +201,24 @@ export default function PetsPage() {
               <div className="flex gap-3 justify-center">
                 <button
                   className="w-10 h-10 rounded-full bg-white border-2 border-gray-300 flex items-center justify-center text-gray-600 hover:border-[#FF6B6B] hover:text-[#FF6B6B] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                  disabled={page === 1}
-                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={page === 0}
+                  onClick={() => setPage((p) => Math.max(0, p - 1))}
                 >
                   ←
                 </button>
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((num) => (
+                {Array.from({ length: totalPages }, (_, i) => i).map((num) => (
                   <button
                     key={num}
                     className={`w-10 h-10 rounded-full ${num === page ? "bg-[#FF6B6B] text-white" : "bg-white text-gray-600 hover:border-[#FF6B6B] hover:text-[#FF6B6B]"} border-2 ${num === page ? "border-[#FF6B6B]" : "border-gray-300"} flex items-center justify-center transition-all duration-300`}
                     onClick={() => setPage(num)}
                   >
-                    {num}
+                    {num + 1}
                   </button>
                 ))}
                 <button
                   className="w-10 h-10 rounded-full bg-white border-2 border-gray-300 flex items-center justify-center text-gray-600 hover:border-[#FF6B6B] hover:text-[#FF6B6B] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                  disabled={page === totalPages}
-                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={page === totalPages - 1}
+                  onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
                 >
                   →
                 </button>
