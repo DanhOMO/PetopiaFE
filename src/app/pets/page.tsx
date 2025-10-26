@@ -1,7 +1,7 @@
 "use client";
-import React from "react";
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import useSWR from "swr";
+import axios from "axios";
 import Image from "next/image";
 import { Loading } from "../components/loading";
 import { useCart } from "@/store/useCartStore";
@@ -12,16 +12,7 @@ import ProductCard from "@/app/pets/_components/ProductCard";
 import MiniCart from "@/app/carts/_components/MiniCart";
 
 import type { Pet } from "@/types/Pet";
-
-const CATEGORIES = [
-  { name: "Chim", count: 3 },
-  { name: "Mèo", count: 8 },
-  { name: "Đồ chơi nhai", count: 2 },
-  { name: "Chó", count: 11 },
-  { name: "Nội thất", count: 1 },
-  { name: "Chuột hamster", count: 2 },
-  { name: "Dược phẩm", count: 1 },
-];
+import type { Category } from "@/types/Category";
 
 interface PetResponse {
   content: Pet[];
@@ -30,40 +21,223 @@ interface PetResponse {
   size: number;
 }
 
-// Fetcher: Hàm fetch data từ API
+interface PetSearchRequest {
+  name?: string;
+  categoryId?: string;
+  minAge?: number;
+  maxAge?: number;
+  gender?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  minFinalPrice?: number;  // Giá sau giảm (min)
+  maxFinalPrice?: number;  // Giá sau giảm (max)
+  healthStatus?: string;
+  minWeight?: number;
+  maxWeight?: number;
+  minHeight?: number;
+  maxHeight?: number;
+  minRating?: number;
+  onSale?: boolean;
+  color?: string;
+  furType?: string;
+  page?: number;
+  pageSize?: number;
+  sortBy?: string;
+  sortDirection?: string;
+}
+
+// SWR fetcher cho GET request (dùng fetch thông thường)
 const fetcher = (url: string) => fetch(url).then(res => res.json());
+
+// Axios fetcher cho POST search request
+const axiosSearchFetcher = async ([url, body]: [string, PetSearchRequest]) => {
+  try {
+    console.log('🚀 Calling Search API:', { url, body });
+    const response = await axios.post(url, body);
+    console.log('✅ Search API Response:', response.data);
+    return response.data;
+  } catch (error: any) {
+    console.error('❌ Search API Error:', error.response?.data || error.message);
+    // Nếu là 404 (không tìm thấy), trả về empty response thay vì throw error
+    if (error.response?.status === 404) {
+      return {
+        content: [],
+        totalElements: 0,
+        page: body.page || 0,
+        size: body.pageSize || 6,
+      };
+    }
+    throw error;
+  }
+};
 
 export default function PetsPage() {
   const apiUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-  const pageSize = 9;
-  const [page, setPage] = React.useState(0);
+  const pageSize = 6;
+  const [page, setPage] = useState(0);
   const { addItem, openMiniCart } = useCart();
 
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(""); // Query thực tế để fetch API
+  const [searchInput, setSearchInput] = useState(""); // Input từ user
   const [sortBy, setSortBy] = useState("default");
 
-  // SWR: Tự động fetch khi page thay đổi
-  const { data, error, isLoading } = useSWR<PetResponse>(
-    `${apiUrl}/pets`,
+  // Fetch categories từ API (dùng SWR với fetch)
+  const { data: categoriesData } = useSWR<Category[]>(
+    `${apiUrl}/categories/list`,
     fetcher
   );
+
+  // Tính count cho mỗi category và lấy giá cao nhất dựa trên tất cả pets (không phân trang)
+  const { data: allPetsData } = useSWR<PetResponse>(
+    `${apiUrl}/pets?page=0&size=1000`,
+    fetcher
+  );
+
+  // Tính max price từ tất cả pets
+  const maxPrice = useMemo(() => {
+    if (!allPetsData?.content || allPetsData.content.length === 0) {
+      return 10000000;
+    }
+    const prices = allPetsData.content.map(pet => pet.price);
+    return Math.max(...prices);
+  }, [allPetsData]);
+
+  // Always start from 0 and go to maxPrice
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 10000000]);
+  const [isPriceRangeInitialized, setIsPriceRangeInitialized] = useState(false);
+
+  // Update priceRange when maxPrice changes (only once on initial load)
+  useEffect(() => {
+    if (!isPriceRangeInitialized && maxPrice !== 10000000) {
+      setPriceRange([0, maxPrice]);
+      setIsPriceRangeInitialized(true);
+    }
+  }, [maxPrice, isPriceRangeInitialized]);
+
+  // Build search request body
+  const searchRequest: PetSearchRequest = useMemo(() => {
+    const request: PetSearchRequest = {
+      page,
+      pageSize,
+    };
+
+    if (searchQuery.trim()) {
+      request.name = searchQuery.trim();
+    }
+
+    if (selectedCategory) {
+      // Tìm categoryId từ categoryName
+      const category = categoriesData?.find(cat => cat.name === selectedCategory);
+      if (category) {
+        request.categoryId = category.categoryId;
+      }
+    }
+
+    // Gửi minFinalPrice và maxFinalPrice để lọc theo giá sau giảm
+    if (priceRange[0] > 0) {
+      request.minFinalPrice = priceRange[0];
+    }
+    
+    if (priceRange[1] < maxPrice && maxPrice !== 10000000) {
+      request.maxFinalPrice = priceRange[1];
+    }
+
+    // Sort mapping - LUÔN gửi sortBy và sortDirection
+    switch (sortBy) {
+      case "price-low":
+        request.sortBy = "price";
+        request.sortDirection = "asc";
+        break;
+      case "price-high":
+        request.sortBy = "price";
+        request.sortDirection = "desc";
+        break;
+      case "rating":
+        request.sortBy = "rating";
+        request.sortDirection = "desc";
+        break;
+      case "latest":
+        request.sortBy = "createdAt";
+        request.sortDirection = "desc";
+        break;
+      default:
+        // Mặc định sort theo createdAt desc
+        request.sortBy = "createdAt";
+        request.sortDirection = "desc";
+        break;
+    }
+
+    return request;
+  }, [page, pageSize, searchQuery, selectedCategory, priceRange, sortBy, categoriesData, maxPrice]);
+
+  // Check if we need to use search API (có filter hoặc search)
+  const shouldUseSearch = useMemo(() => {
+    // Có search query
+    if (searchQuery.trim()) return true;
+    
+    // Có category được chọn
+    if (selectedCategory) return true;
+    
+    // Có sort được áp dụng
+    if (sortBy !== "default") return true;
+    
+    // Kiểm tra price range có khác với giá trị mặc định không
+    // Chỉ kiểm tra khi đã khởi tạo xong
+    if (isPriceRangeInitialized) {
+      if (priceRange[0] > 0 || priceRange[1] < maxPrice) {
+        return true;
+      }
+    }
+    
+    return false;
+  }, [searchQuery, selectedCategory, sortBy, priceRange, maxPrice, isPriceRangeInitialized]);
+
+  // Fetch data với search API (POST) hoặc get all API (GET với SWR fetch)
+  const { data, error, isLoading } = useSWR<PetResponse>(
+    shouldUseSearch 
+      ? [`${apiUrl}/pets/search`, searchRequest]
+      : `${apiUrl}/pets?page=${page}&size=${pageSize}`,
+    shouldUseSearch
+      ? axiosSearchFetcher
+      : fetcher
+  );
+
+  // Debug log
+  useEffect(() => {
+    console.log('🔍 Search State:', {
+      shouldUseSearch,
+      selectedCategory,
+      searchRequest,
+      maxPrice,
+      priceRange,
+      isPriceRangeInitialized,
+      categoriesData,
+      apiUrl
+    });
+  }, [shouldUseSearch, selectedCategory, searchRequest, maxPrice, priceRange, isPriceRangeInitialized, categoriesData, apiUrl]);
 
   const pets = data?.content || [];
   const totalElements = data?.totalElements || 0;
 
-  // Calculate max price from pets data
-  const maxPrice = pets && pets.length > 0 ? Math.max(...pets.map(pet => pet.discountPrice || pet.price)) : 10000000;
-  
-  // Always start from 0 and go to maxPrice
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, maxPrice]);
+  const categories = (categoriesData || []).map(cat => {
+    const count = (allPetsData?.content || []).filter(pet => pet.categoryName === cat.name).length;
+    return {
+      ...cat,
+      count
+    };
+  });
 
-  // Update price range when pets data changes
-  React.useEffect(() => {
-    if (pets && pets.length > 0) {
-      setPriceRange([0, maxPrice]);
-    }
-  }, [pets, maxPrice]);
+  // Reset page về 0 khi filter thay đổi
+  useEffect(() => {
+    setPage(0);
+  }, [selectedCategory, searchQuery, sortBy, priceRange]);
+
+  // Handle search button click hoặc Enter
+  const handleSearch = () => {
+    setSearchQuery(searchInput); // Cập nhật query từ input
+    setPage(0); // Reset về trang đầu
+  };
 
   if (isLoading) return <Loading />;
   if (error) return <div className="text-center py-10 text-red-500">Lỗi: {error.message}</div>;
@@ -71,10 +245,13 @@ export default function PetsPage() {
   // Lấy thumbnail cho từng pet
   const getThumbnail = (petId: string, mainImageUrl: string | null) => {
     if (mainImageUrl) {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8081";
-      return `${apiUrl}/images/${mainImageUrl}`;
+      // Chỉ dùng URL đầy đủ
+      if (mainImageUrl.startsWith('http://') || mainImageUrl.startsWith('https://')) {
+        return mainImageUrl;
+      }
     }
-    return "/imgs/imgPet/animal-8165466_1280.jpg";
+    // Fallback về ảnh local
+    return "/assets/imgs/imgPet/cat-6593947_1280.jpg";
   };
 
   const totalPages = Math.ceil(totalElements / pageSize);
@@ -113,12 +290,20 @@ export default function PetsPage() {
                   <input
                     type="text"
                     placeholder="Tìm kiếm sản phẩm..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        handleSearch();
+                      }
+                    }}
                     className="w-full rounded-full border border-gray-300 bg-white px-6 py-3 text-[#2d2d2d] placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#FF6B6B] focus:border-transparent"
                   />
                 </div>
-                <button className="rounded-full bg-[#FF6B6B] p-3 text-white hover:bg-[#FF5555] transition-colors">
+                <button 
+                  onClick={handleSearch}
+                  className="rounded-full bg-[#FF6B6B] p-3 text-white hover:bg-[#FF5555] transition-colors"
+                >
                   <Search size={20} />
                 </button>
               </div>
@@ -130,19 +315,39 @@ export default function PetsPage() {
                 Mua theo danh mục
               </h2>
               <CategoryFilter
-                categories={CATEGORIES}
+                categories={categories}
                 selectedCategory={selectedCategory}
                 onSelectCategory={setSelectedCategory}
               />
             </div>
 
             {/* Price Range */}
-            <div>
+            <div className="mb-8">
               <h2 className="mb-4 rounded-2xl bg-[#F5E6D3] px-6 py-3 text-lg font-bold text-[#2d2d2d]">
                 Khoảng giá
               </h2>
-              <PriceRangeFilter priceRange={priceRange} onPriceChange={setPriceRange} maxPrice={maxPrice} minPrice={0} />
+              <PriceRangeFilter 
+                priceRange={priceRange} 
+                onPriceChange={setPriceRange} 
+                maxPrice={maxPrice} 
+                minPrice={0} 
+              />
             </div>
+
+            {/* Clear All Filters Button */}
+            <button 
+              onClick={() => {
+                setSelectedCategory(null);
+                setPriceRange([0, maxPrice || 10000000]);
+                setSearchQuery("");
+                setSearchInput("");
+                setSortBy("default");
+                setPage(0);
+              }}
+              className="w-full rounded-full bg-[#FF6B6B] px-6 py-3 font-semibold text-white hover:bg-[#102937] hover:text-white transition-colors cursor-pointer"
+            >
+              Xóa tất cả lọc
+            </button>
           </aside>
 
           {/* Main Content */}
