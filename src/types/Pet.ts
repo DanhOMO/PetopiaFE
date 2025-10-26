@@ -9,6 +9,11 @@ export type Pet = {
   mainImageUrl?: string | null;
   rating?: number | null;
   reviewCount?: number | null;
+  totalSold?: number | null;
+  categoryName?: string | null;
+  gender?: "MALE" | "FEMALE" | null;
+  healthStatus?: string | null;
+  status?: "AVAILABLE" | "SOLD" | "RESERVED" | null;
 };
 
 // PetResponseDTO - Dùng khi load chi tiết 1 Pet

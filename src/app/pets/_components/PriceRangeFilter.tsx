@@ -23,7 +23,7 @@ export default function PriceRangeFilter({ priceRange, onPriceChange, maxPrice =
     const newMin = Math.max(0, Math.min(val, localRange[1] - 50000))
     const roundedMax = Math.round(localRange[1] / 50000) * 50000
     setLocalRange([newMin, roundedMax])
-    onPriceChange([newMin, roundedMax])
+    // Không gọi onPriceChange ở đây nữa
   }
 
   const handleMaxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,7 +32,11 @@ export default function PriceRangeFilter({ priceRange, onPriceChange, maxPrice =
     const newMax = Math.min(maxPrice, Math.max(val, localRange[0] + 50000))
     const roundedMin = Math.round(localRange[0] / 50000) * 50000
     setLocalRange([roundedMin, newMax])
-    onPriceChange([roundedMin, newMax])
+    // Không gọi onPriceChange ở đây nữa
+  }
+
+  const handleApplyFilter = () => {
+    onPriceChange(localRange)
   }
 
   return (
@@ -84,8 +88,11 @@ export default function PriceRangeFilter({ priceRange, onPriceChange, maxPrice =
           </div>
         </div>
 
-      {/* Filter Button */}
-  <button className="w-full rounded-full bg-[#FF6B6B] px-6 py-3 font-semibold text-white hover:bg-[#102937] hover:text-white transition-colors cursor-pointer">
+      {/* Apply Filter Button */}
+      <button
+        onClick={handleApplyFilter}
+        className="w-full rounded-full bg-[#FF6B6B] px-4 py-2 text-sm font-semibold text-white hover:bg-[#FF5555] transition-colors"
+      >
         Lọc
       </button>
     </div>
