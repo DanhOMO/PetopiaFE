@@ -47,12 +47,10 @@ export default function NewsPage() {
   if (isLoading) return <Loading />;
   if (error) return <div className="text-center py-10 text-red-500">Lỗi: {error.message}</div>;
 
-  // Kết hợp dữ liệu từ API và dữ liệu mẫu
   const allArticles = [...(articles || []), ...sampleArticles];
 
   return (
     <div className="min-h-screen">
-      {/* Title Section with Background */}
       <div className="relative py-24">
         <div className="absolute inset-0">
           <img 
@@ -82,7 +80,7 @@ export default function NewsPage() {
                 title={article.title}
                 description={article.content}
                 image={article.imageUrl || "/assets/imgs/imgPet/animal-8165466_1280.jpg"}
-                articleId={article.articleId}
+                articleId={article.articleId || null}
               />
             ))}
           </div>
