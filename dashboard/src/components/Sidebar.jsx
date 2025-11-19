@@ -112,7 +112,7 @@ function Sidebar({ darkMode, onItemClick }) {
             >
               <div className="flex items-center gap-3">
                 <HiShoppingBag className="h-5 w-5" />
-                <span className="font-medium">Ecommerce</span>
+                <span className="font-medium">Quản lý thú cưng</span>
               </div>
               {openSections.ecommerce ? (
                 <HiChevronDown className="h-4 w-4" />
@@ -132,6 +132,46 @@ function Sidebar({ darkMode, onItemClick }) {
                   }`}
                 >
                   Products
+                </button>
+                <button
+                  onClick={() => onItemClick && onItemClick("pets")}
+                  className={`w-full text-left px-4 py-2 rounded-lg text-sm transition-all ${
+                    darkMode
+                      ? "hover:bg-gray-800 text-gray-400 hover:text-white"
+                      : "hover:bg-[#f5d7b7] text-gray-600 hover:text-[#7b4f35]"
+                  }`}
+                >
+                  Thú cưng
+                </button>
+                <button
+                  onClick={() => onItemClick && onItemClick("reviews")}
+                  className={`w-full text-left px-4 py-2 rounded-lg text-sm transition-all ${
+                    darkMode
+                      ? "hover:bg-gray-800 text-gray-400 hover:text-white"
+                      : "hover:bg-[#f5d7b7] text-gray-600 hover:text-[#7b4f35]"
+                  }`}
+                >
+                  Đánh giá
+                </button>
+                <button
+                  onClick={() => onItemClick && onItemClick("injections")}
+                  className={`w-full text-left px-4 py-2 rounded-lg text-sm transition-all ${
+                    darkMode
+                      ? "hover:bg-gray-800 text-gray-400 hover:text-white"
+                      : "hover:bg-[#f5d7b7] text-gray-600 hover:text-[#7b4f35]"
+                  }`}
+                >
+                  Lịch tiêm
+                </button>
+                <button
+                  onClick={() => onItemClick && onItemClick("services")}
+                  className={`w-full text-left px-4 py-2 rounded-lg text-sm transition-all ${
+                    darkMode
+                      ? "hover:bg-gray-800 text-gray-400 hover:text-white"
+                      : "hover:bg-[#f5d7b7] text-gray-600 hover:text-[#7b4f35]"
+                  }`}
+                >
+                  Services
                 </button>
                 <button
                   onClick={() => onItemClick && onItemClick("invoices")}

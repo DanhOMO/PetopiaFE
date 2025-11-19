@@ -18,6 +18,11 @@ import PetStatistics from "./components/PetStatistics";
 import Dashboard from "./components/Dashboard";
 import ArticleManager from "./components/ArticleManager";
 import PromotionManagement from "./components/promotions/PromotionManagement";
+import PetsManagement from "./components/PetManagement/PetsManagement";
+import PetServiceManagement from "./components/Products";
+import ServiceVice from "./components/PetManagement/ServicesManagement";
+import ReviewsManagement from "./components/PetManagement/ReviewsManagement";
+import VaccinationManagement from "./components/PetManagement/VaccinationManagement";
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -44,8 +49,14 @@ function App() {
         return <Dashboard />;
       case "products":
         return <Products />;
-      case "billings":
-        return <div>Billings Page</div>;
+      case "pets":
+        return <PetsManagement />;
+      case "services":
+        return <ServiceVice />;
+      case "reviews":
+        return <ReviewsManagement />;
+      case "injections":
+        return <VaccinationManagement />;
       case "revenue-statistics":
         return <RevenueStatistics />;
       case "pet-statistics":
