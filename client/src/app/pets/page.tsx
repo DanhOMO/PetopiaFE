@@ -56,16 +56,18 @@ const axiosSearchFetcher = async ([url, body]: [string, PetSearchRequest]) => {
     const response = await axios.post(url, body);
     console.log('✅ Search API Response:', response.data);
     return response.data;
-  } catch (error: any) {
-    console.error('❌ Search API Error:', error.response?.data || error.message);
-    // Nếu là 404 (không tìm thấy), trả về empty response thay vì throw error
-    if (error.response?.status === 404) {
-      return {
-        content: [],
-        totalElements: 0,
-        page: body.page || 0,
-        size: body.pageSize || 6,
-      };
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('❌ Search API Error:', error.response?.data || error.message);
+      // Nếu là 404 (không tìm thấy), trả về empty response thay vì throw error
+      if (error.response?.status === 404) {
+        return {
+          content: [],
+          totalElements: 0,
+          page: body.page || 0,
+          size: body.pageSize || 6,
+        };
+      }
     }
     throw error;
   }
@@ -381,25 +383,55 @@ export default function PetsPage() {
             </div>
 
             {/* Product Grid */}
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-8">
-              {pets.map((pet) => (
-                <ProductCard
-                  key={pet.petId}
-                  product={{
-                    petId: pet.petId,
-                    name: pet.name,
-                    price: pet.price,
-                    discountPrice: pet.discountPrice || undefined,
-                    image: getThumbnail(pet.petId, pet.mainImageUrl || null),
-                    isSale: !!pet.discountPrice
-                  }}
-                  onAddToCart={() => {
-                    addItem({ pet: pet, quantity: 1, img: getThumbnail(pet.petId, pet.mainImageUrl || null) });
-                    openMiniCart();
-                  }}
-                />
-              ))}
-            </div>
+            {pets.length === 0 ? (
+              // Empty state - Không tìm thấy thú cưng
+              <div className="flex flex-col items-center justify-center py-20">
+                <div className="mb-8">
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    width="120" 
+                    height="120" 
+                    fill="none"
+                    className="text-[#A0694B]"
+                  >
+                    <path 
+                      fill="currentColor" 
+                      d="M60 0C26.863 0 0 26.863 0 60s26.863 60 60 60 60-26.863 60-60S93.137 0 60 0Zm19.355 40.645a7.742 7.742 0 0 1 7.742 7.742 7.742 7.742 0 0 1-7.742 7.742 7.742 7.742 0 0 1-7.742-7.742 7.742 7.742 0 0 1 7.742-7.742ZM36.774 98.71c-6.41 0-11.613-5.081-11.613-11.355 0-4.84 6.892-14.606 10.065-18.806a1.927 1.927 0 0 1 3.096 0c3.173 4.2 10.065 13.966 10.065 18.806 0 6.274-5.203 11.355-11.613 11.355Zm3.871-42.581a7.742 7.742 0 0 1-7.742-7.742 7.742 7.742 0 0 1 7.742-7.742 7.742 7.742 0 0 1 7.742 7.742 7.742 7.742 0 0 1-7.742 7.742Zm41.161 37.29A28.403 28.403 0 0 0 60 83.226c-5.129 0-5.129-7.742 0-7.742a36.013 36.013 0 0 1 27.742 13.032c3.337 3.968-2.71 8.826-5.936 4.903Z"
+                    />
+                  </svg>
+                </div>
+                
+                <div className="text-center">
+                  <h2 className="text-3xl font-bold text-gray-700 mb-4">Không có thú cưng nào</h2>
+                  <p className="text-gray-500 text-lg">
+                    {shouldUseSearch 
+                      ? "Không tìm thấy thú cưng nào phù hợp với tiêu chí bạn tìm kiếm" 
+                      : "Hiện chưa có thú cưng nào trong danh sách"}
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-8">
+                {pets.map((pet) => (
+                  <ProductCard
+                    key={pet.petId}
+                    product={{
+                      petId: pet.petId,
+                      name: pet.name,
+                      price: pet.price,
+                      discountPrice: pet.discountPrice || undefined,
+                      rating: pet.rating || undefined,
+                      image: getThumbnail(pet.petId, pet.mainImageUrl || null),
+                      isSale: !!pet.discountPrice
+                    }}
+                    onAddToCart={() => {
+                      addItem({ pet: pet, quantity: 1, img: getThumbnail(pet.petId, pet.mainImageUrl || null) });
+                      openMiniCart();
+                    }}
+                  />
+                ))}
+              </div>
+            )}
 
             {/* Pagination */}
             {totalPages > 1 && (
