@@ -2,49 +2,110 @@
 
 import { useState } from "react"
 import { useParams, useRouter } from "next/navigation"
-import { Heart, Eye, Minus, Plus, Star, Clock, Users, ArrowLeft } from "lucide-react"
+import { Heart, Minus, Plus, Star, ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { trpc } from "@/utils/trpc"
 import { useCart } from "@/store/useCartStore"
 import { Loading } from "@/app/components/loading"
 import Image from "next/image"
 import MiniCart from "@/app/carts/_components/MiniCart"
+import useSWR from "swr"
+import type { Pet } from "@/types/Pet"
+
+// Interface cho API Response từ backend
+interface ApiResponse<T> {
+  status: number;
+  message: string;
+  data?: T;
+}
+
+// Interface cho Pet chi tiết từ backend
+interface PetDetailDTO {
+  petId: string;
+  name: string;
+  description?: string | null;
+  categoryId?: string | null;
+  categoryName?: string | null;
+  age?: number | null;
+  gender?: "MALE" | "FEMALE" | "UNKNOWN" | null;
+  price: number;
+  discountPrice?: number | null;
+  healthStatus?: string | null;
+  vaccinationHistory?: string | null;
+  stockQuantity?: number | null;
+  status?: "AVAILABLE" | "SOLD" | "RESERVED" | "DRAFT" | null;
+  videoUrl?: string | null;
+  weight?: number | null;
+  height?: number | null;
+  color?: string | null;
+  furType?: "SHORT" | "LONG" | "CURLY" | "NONE" | "OTHER" | null;
+  mainImageUrl?: string | null;
+  rating?: number | null;
+  reviewCount?: number | null;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+// Fetcher cho SWR
+const fetcher = async (url: string): Promise<PetDetailDTO> => {
+  const response = await fetch(url);
+  const apiResponse: ApiResponse<PetDetailDTO> = await response.json();
+  
+  if (apiResponse.status !== 200 || !apiResponse.data) {
+    throw new Error(apiResponse.message || 'Không tìm thấy thú cưng');
+  }
+  
+  return apiResponse.data;
+};
 
 export default function PetDetailPage() {
   const params = useParams()
   const router = useRouter()
   const petId = params.id as string
+  const apiUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   
   const [quantity, setQuantity] = useState(1)
   const [isWishlisted, setIsWishlisted] = useState(false)
   
   const { addItem, openMiniCart } = useCart()
   
-  // Fetch pet data
-  const { data: pet, isLoading: petLoading, error } = trpc.pet.getById.useQuery({ petId: petId })
-  const { data: petImgs } = trpc.petImg.getAll.useQuery()
-  const { data: allPets } = trpc.pet.getAll.useQuery() // Để debug
+  // Fetch pet data từ backend API
+  const { data: pet, error, isLoading } = useSWR<PetDetailDTO>(
+    `${apiUrl}/pets/${petId}`,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      shouldRetryOnError: false
+    }
+  );
   
-  // Debug log
-  console.log("Pet ID:", petId)
-  console.log("Pet data:", pet)
-  console.log("All pets:", allPets?.map(p => p.petId))
-  console.log("Loading:", petLoading)
-  console.log("Error:", error)
+  if (isLoading) return <Loading />
   
-  if (petLoading) return <Loading />
-  if (error) return <div className="text-center py-10 text-red-500">Lỗi: {error.message}</div>
-  if (!pet) {
+  if (error) {
     return (
-      <div className="text-center py-10">
-        <div className="text-red-500 mb-4">Không tìm thấy thú cưng với ID: {petId}</div>
-        <div className="text-sm text-gray-500">
-          Các ID có sẵn: {allPets?.map(p => p.petId).join(", ")}
+      <div className="text-center py-20">
+        <div className="text-red-500 mb-4 text-xl font-semibold">
+          {error.message || 'Không tìm thấy thú cưng'}
         </div>
         <button 
           onClick={() => router.push('/pets')}
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          className="mt-4 px-6 py-3 bg-[#FF6B6B] text-white rounded-full hover:bg-[#FF5555] transition-colors"
+        >
+          Quay lại danh sách thú cưng
+        </button>
+      </div>
+    );
+  }
+  
+  if (!pet) {
+    return (
+      <div className="text-center py-20">
+        <div className="text-red-500 mb-4 text-xl font-semibold">
+          Không tìm thấy thú cưng với ID: {petId}
+        </div>
+        <button 
+          onClick={() => router.push('/pets')}
+          className="mt-4 px-6 py-3 bg-[#FF6B6B] text-white rounded-full hover:bg-[#FF5555] transition-colors"
         >
           Quay lại danh sách thú cưng
         </button>
@@ -52,14 +113,48 @@ export default function PetDetailPage() {
     )
   }
 
-  // Get images for this pet
-  const petImages = petImgs?.filter((img: any) => img.petId === petId) || []
-  const thumbnailImage = petImages.find((img: any) => img.isThumbnail)?.imageUrl || "/assets/imgs/imgPet/animal-8165466_1280.jpg"
-  const allImages = petImages.length > 0 ? petImages.map((img: any) => img.imageUrl) : [thumbnailImage]
+  // Xử lý ảnh giống như trang pets
+  const getThumbnail = (mainImageUrl: string | null) => {
+    if (mainImageUrl) {
+      // Chỉ dùng URL đầy đủ
+      if (mainImageUrl.startsWith('http://') || mainImageUrl.startsWith('https://')) {
+        return mainImageUrl;
+      }
+      // Nếu bắt đầu bằng / thì là đường dẫn tuyệt đối
+      if (mainImageUrl.startsWith('/')) {
+        return mainImageUrl;
+      }
+    }
+    // Fallback về ảnh local
+    return "/assets/imgs/imgPet/cat-6593947_1280.jpg";
+  };
+
+  const thumbnailImage = getThumbnail(pet.mainImageUrl || null);
+  const allImages = [thumbnailImage];
+
+  // Convert sang Pet type cho cart
+  const convertToPetType = (): Pet => {
+    return {
+      petId: pet.petId,
+      name: pet.name,
+      description: pet.description,
+      price: pet.price,
+      discountPrice: pet.discountPrice,
+      stockQuantity: pet.stockQuantity,
+      mainImageUrl: pet.mainImageUrl,
+      categoryName: pet.categoryName,
+      gender: (pet.gender === 'UNKNOWN' || !pet.gender) ? null : pet.gender as "MALE" | "FEMALE",
+      healthStatus: pet.healthStatus,
+      status: pet.status === 'DRAFT' ? null : pet.status as "AVAILABLE" | "SOLD" | "RESERVED" | null,
+      rating: pet.rating,
+      reviewCount: pet.reviewCount,
+      totalSold: null,
+    };
+  };
 
   const handleAddToCart = () => {
     addItem({ 
-      pet: pet, 
+      pet: convertToPetType(), 
       quantity: quantity, 
       img: thumbnailImage 
     })
@@ -68,7 +163,7 @@ export default function PetDetailPage() {
 
   const handleBuyNow = () => {
     addItem({ 
-      pet: pet, 
+      pet: convertToPetType(), 
       quantity: quantity, 
       img: thumbnailImage 
     })
@@ -137,10 +232,26 @@ export default function PetDetailPage() {
               <div className="flex items-center gap-3">
                 <div className="flex gap-1">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} size={18} className="fill-yellow-400 text-yellow-400" />
+                    <Star 
+                      key={i} 
+                      size={18} 
+                      className={
+                        i < Math.floor(pet.rating || 0)
+                          ? "fill-yellow-400 text-yellow-400" 
+                          : "text-gray-300"
+                      }
+                    />
                   ))}
                 </div>
-                <span className="text-muted-foreground text-sm">(Đánh giá từ khách hàng)</span>
+                <span className="text-muted-foreground text-sm">
+                  {pet.rating ? (
+                    <>
+                      {pet.rating.toFixed(1)} ({pet.reviewCount || 0} đánh giá)
+                    </>
+                  ) : (
+                    '(Chưa có đánh giá)'
+                  )}
+                </span>
               </div>
             </div>
 
@@ -182,22 +293,70 @@ export default function PetDetailPage() {
             <div className="space-y-3">
               <h3 className="font-bold text-foreground text-lg">Thông tin chi tiết</h3>
               <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <span className="font-semibold text-muted-foreground">Loại:</span>
-                  <span className="ml-2 text-foreground">{pet.category}</span>
-                </div>
+                {pet.categoryName && (
+                  <div>
+                    <span className="font-semibold text-muted-foreground">Loại:</span>
+                    <span className="ml-2 text-foreground">{pet.categoryName}</span>
+                  </div>
+                )}
                 <div>
                   <span className="font-semibold text-muted-foreground">Giới tính:</span>
-                  <span className="ml-2 text-foreground">{pet.gender}</span>
+                  <span className="ml-2 text-foreground">
+                    {pet.gender === 'MALE' ? 'Đực' : pet.gender === 'FEMALE' ? 'Cái' : 'Chưa xác định'}
+                  </span>
                 </div>
-                <div>
-                  <span className="font-semibold text-muted-foreground">Tuổi:</span>
-                  <span className="ml-2 text-foreground">{pet.age} tháng</span>
-                </div>
-                <div>
-                  <span className="font-semibold text-muted-foreground">Cân nặng:</span>
-                  <span className="ml-2 text-foreground">{pet.weight} kg</span>
-                </div>
+                {pet.age && (
+                  <div>
+                    <span className="font-semibold text-muted-foreground">Tuổi:</span>
+                    <span className="ml-2 text-foreground">{pet.age} tháng</span>
+                  </div>
+                )}
+                {pet.weight && (
+                  <div>
+                    <span className="font-semibold text-muted-foreground">Cân nặng:</span>
+                    <span className="ml-2 text-foreground">{pet.weight} kg</span>
+                  </div>
+                )}
+                {pet.height && (
+                  <div>
+                    <span className="font-semibold text-muted-foreground">Chiều cao:</span>
+                    <span className="ml-2 text-foreground">{pet.height} cm</span>
+                  </div>
+                )}
+                {pet.color && (
+                  <div>
+                    <span className="font-semibold text-muted-foreground">Màu sắc:</span>
+                    <span className="ml-2 text-foreground">{pet.color}</span>
+                  </div>
+                )}
+                {pet.furType && pet.furType !== 'NONE' && (
+                  <div>
+                    <span className="font-semibold text-muted-foreground">Loại lông:</span>
+                    <span className="ml-2 text-foreground">
+                      {pet.furType === 'SHORT' ? 'Lông ngắn' : 
+                       pet.furType === 'LONG' ? 'Lông dài' : 
+                       pet.furType === 'CURLY' ? 'Lông xoăn' : 'Khác'}
+                    </span>
+                  </div>
+                )}
+                {pet.healthStatus && (
+                  <div>
+                    <span className="font-semibold text-muted-foreground">Tình trạng sức khỏe:</span>
+                    <span className="ml-2 text-foreground">{pet.healthStatus}</span>
+                  </div>
+                )}
+                {pet.vaccinationHistory && (
+                  <div className="col-span-2">
+                    <span className="font-semibold text-muted-foreground">Lịch sử tiêm chủng:</span>
+                    <span className="ml-2 text-foreground">{pet.vaccinationHistory}</span>
+                  </div>
+                )}
+                {pet.stockQuantity !== null && pet.stockQuantity !== undefined && (
+                  <div>
+                    <span className="font-semibold text-muted-foreground">Số lượng:</span>
+                    <span className="ml-2 text-foreground">{pet.stockQuantity}</span>
+                  </div>
+                )}
               </div>
             </div>
 

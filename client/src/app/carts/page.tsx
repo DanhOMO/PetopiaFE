@@ -1,73 +1,44 @@
 'use client'
 
-import React, { useState } from 'react'
+import React from 'react'
 import Image from 'next/image'
-import { Minus, Plus, ChevronDown } from 'lucide-react'
-
-interface CartItem {
-  id: number
-  name: string
-  image: string
-  originalPrice: number
-  salePrice: number
-  quantity: number
-}
+import { Minus, Plus } from 'lucide-react'
+import { useCart } from '@/store/useCartStore'
+import Link from 'next/link'
 
 const CartPage = () => {
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: 1,
-      name: "Thức ăn cho chó Royal Canin Adult 15kg",
-      image: "/assets/imgs/imgStore/img0522-8245.jpeg",
-      originalPrice: 1500000,
-      salePrice: 1200000,
-      quantity: 2
-    },
-    {
-      id: 2,
-      name: "Đồ chơi bóng cao su cho mèo",
-      image: "/assets/imgs/imgStore/img0800-2361.jpeg",
-      originalPrice: 150000,
-      salePrice: 120000,
-      quantity: 1
+  const { 
+    items, 
+    subtotal, 
+    updateQuantity, 
+    removeItem,
+    calculateItemTotal,
+    calculateItemSavings 
+  } = useCart()
+
+  const handleUpdateQuantity = (petId: string, change: number) => {
+    const item = items.find(i => i.pet.petId === petId)
+    if (item) {
+      const newQuantity = Math.max(1, item.quantity + change)
+      updateQuantity(petId, newQuantity)
     }
-  ])
-
-  const [showCoupon, setShowCoupon] = useState(false)
-
-  const updateQuantity = (id: number, change: number) => {
-    setCartItems(items =>
-      items.map(item =>
-        item.id === id
-          ? { ...item, quantity: Math.max(1, item.quantity + change) }
-          : item
-      )
-    )
   }
 
-  const removeItem = (id: number) => {
-    setCartItems(items => items.filter(item => item.id !== id))
+  const handleRemoveItem = (petId: string) => {
+    removeItem(petId)
   }
-
-  const calculateItemTotal = (item: CartItem) => {
-    return item.salePrice * item.quantity
-  }
-
-  const calculateSavings = (item: CartItem) => {
-    return (item.originalPrice - item.salePrice) * item.quantity
-  }
-
-  const subtotal = cartItems.reduce((sum, item) => sum + calculateItemTotal(item), 0)
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#F5D7B7] to-[#FDF6E3]">
         {/* Cart Title */}
         <div className="relative py-24">
           <div className="absolute inset-0">
-            <img 
+            <Image 
               src="/assets/imgs/imgBackgroundTitle/bc-blog-listing.jpg"
               alt="Cart Background"
-              className="w-full h-full object-cover object-top"
+              fill
+              className="object-cover object-top"
+              priority
             />
             <div className="absolute inset-0 bg-black/20"></div>
           </div>
@@ -80,7 +51,7 @@ const CartPage = () => {
           </div>
         </div>
 
-      {cartItems.length === 0 ? (
+      {items.length === 0 ? (
         // Empty cart - hiển thị SVG và text
         <div className="container mx-auto px-4 py-20 max-w-7xl">
           <div className="flex flex-col items-center justify-center">
@@ -104,9 +75,11 @@ const CartPage = () => {
             <div className="text-center">
               <h2 className="text-3xl font-bold text-gray-600 mb-4">Giỏ hàng rỗng</h2>
               <p className="text-gray-500 text-lg mb-8">Bạn chưa có sản phẩm nào trong giỏ hàng</p>
-              <button className="bg-[#7B4F35] text-white px-8 py-3 rounded-full font-semibold text-lg hover:bg-[#A0694B] transition-colors shadow-lg">
-                Tiếp tục mua sắm
-              </button>
+              <Link href="/pets">
+                <button className="bg-[#7B4F35] text-white px-8 py-3 rounded-full font-semibold text-lg hover:bg-[#A0694B] transition-colors shadow-lg">
+                  Tiếp tục mua sắm
+                </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -123,84 +96,96 @@ const CartPage = () => {
             </div>
 
             {/* Cart Items */}
-            {cartItems.map(item => (
-              <div key={item.id} className="grid grid-cols-12 gap-4 px-6 py-6 border-b border-gray-200 items-start">
-                {/* Product */}
-                <div className="col-span-1 flex items-start pr-6">
-                  <div className="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
-                    <Image
-                      src={item.image}
-                      alt={item.name}
-                      width={80}
-                      height={80}
-                      className="object-cover"
-                    />
+            {items.map(item => {
+              const pet = item.pet
+              const currentPrice = pet.discountPrice || pet.price
+              const hasDiscount = pet.discountPrice && pet.discountPrice < pet.price
+              
+              return (
+                <div key={pet.petId} className="grid grid-cols-12 gap-4 px-6 py-6 border-b border-gray-200 items-start">
+                  {/* Product */}
+                  <div className="col-span-1 flex items-start pr-6">
+                    <div className="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
+                      <Image
+                        src={item.img || pet.mainImageUrl || '/assets/imgs/placeholder.png'}
+                        alt={pet.name}
+                        width={80}
+                        height={80}
+                        className="object-cover"
+                      />
+                    </div>
                   </div>
-                </div>
 
-                {/* Details */}
-                <div className="col-span-7 border-l border-gray-200 px-6 flex items-center justify-between">
-                  <div>
-                    <h3 className="text-xl font-bold text-[#7B4F35] mb-2 cursor-pointer hover:underline transition-all" style={{ textUnderlineOffset: '3px' }}>
-                      {item.name}
-                    </h3>
-                    <div className="flex items-center gap-2">
-                      <span className="text-gray-500 line-through text-base">
-                        {item.originalPrice.toLocaleString('vi-VN')}₫
-                      </span>
-                      <span className="text-gray-800 font-semibold text-base">
-                        {item.salePrice.toLocaleString('vi-VN')}₫
-                      </span>
+                  {/* Details */}
+                  <div className="col-span-7 border-l border-gray-200 px-6 flex items-center justify-between">
+                    <div>
+                      <Link href={`/pets/${pet.petId}`}>
+                        <h3 className="text-xl font-bold text-[#7B4F35] mb-2 cursor-pointer hover:underline transition-all" style={{ textUnderlineOffset: '3px' }}>
+                          {pet.name}
+                        </h3>
+                      </Link>
+                      <div className="flex items-center gap-2">
+                        {hasDiscount && (
+                          <span className="text-gray-500 line-through text-base">
+                            {pet.price.toLocaleString('vi-VN')}₫
+                          </span>
+                        )}
+                        <span className="text-gray-800 font-semibold text-base">
+                          {currentPrice.toLocaleString('vi-VN')}₫
+                        </span>
+                      </div>
+                    </div>
+                    
+                    {/* Quantity Controls and Remove */}
+                    <div className="flex flex-col items-center gap-3">
+                      {/* Quantity Controls */}
+                      <div className="flex items-center gap-0 bg-[#7B4F35] rounded-full overflow-hidden">
+                        <button
+                          onClick={() => handleUpdateQuantity(pet.petId, -1)}
+                          className="px-3 py-2 text-white  hover:cursor-pointer  "
+                        >
+                          <Minus size={14} />
+                        </button>
+                        <span className="px-8 py-2 text-white font-semibold text-lg">
+                          {item.quantity}
+                        </span>
+                        <button
+                          onClick={() => handleUpdateQuantity(pet.petId, 1)}
+                          className="px-3 py-2 text-white hover:cursor-pointer"
+                        >
+                          <Plus size={14} />
+                        </button>
+                      </div>
+                      {/* Remove Button */}
+                      <button
+                        onClick={() => handleRemoveItem(pet.petId)}
+                        className="text-[#7B4F35] hover:text-gray-500 transition-colors text-sm font-medium relative group"
+                      >
+                        <span className="relative">
+                          Xóa sản phẩm
+                          <span className="absolute left-1/2 bottom-[-7px] w-full h-[1px] bg-[#7B4F35] -translate-x-1/2 group-hover:w-0 transition-all duration-300 ease-in-out"></span>
+                        </span>
+                      </button>
                     </div>
                   </div>
-                  
-                  {/* Quantity Controls and Remove */}
-                  <div className="flex flex-col items-center gap-3">
-                    {/* Quantity Controls */}
-                    <div className="flex items-center gap-0 bg-[#7B4F35] rounded-full overflow-hidden">
-                      <button
-                        onClick={() => updateQuantity(item.id, -1)}
-                        className="px-3 py-2 text-white  hover:cursor-pointer  "
-                      >
-                        <Minus size={14} />
-                      </button>
-                      <span className="px-8 py-2 text-white font-semibold text-lg">
-                        {item.quantity}
-                      </span>
-                      <button
-                        onClick={() => updateQuantity(item.id, 1)}
-                        className="px-3 py-2 text-white hover:cursor-pointer"
-                      >
-                        <Plus size={14} />
-                      </button>
-                    </div>
-                    {/* Remove Button */}
-                    <button
-                      onClick={() => removeItem(item.id)}
-                      className="text-[#7B4F35] hover:text-gray-500 transition-colors text-sm font-medium relative group"
-                    >
-                      <span className="relative">
-                        Xóa sản phẩm
-                        <span className="absolute left-1/2 bottom-[-7px] w-full h-[1px] bg-[#7B4F35] -translate-x-1/2 group-hover:w-0 transition-all duration-300 ease-in-out"></span>
-                      </span>
-                    </button>
-                  </div>
-                </div>
 
-                {/* Total */}
-                <div className="col-span-4 border-l border-gray-200 pl-6 flex items-center justify-center">
-                  {/* Price and Savings */}
-                  <div className="text-right">
-                    <div className="text-2xl font-bold text-gray-800 mb-1">
-                      {calculateItemTotal(item).toLocaleString('vi-VN')}₫
-                    </div>
-                    <div className="text-red-500 font-bold text-sm">
-                      TIẾT KIỆM {calculateSavings(item).toLocaleString('vi-VN')}₫
+                  {/* Total */}
+                  <div className="col-span-4 border-l border-gray-200 pl-6 flex items-center justify-center">
+                    {/* Price and Savings */}
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-gray-800 mb-1">
+                        {calculateItemTotal(item).toLocaleString('vi-VN')}₫
+                      </div>
+                      {hasDiscount && (
+                        <div className="text-red-500 font-bold text-sm">
+                          TIẾT KIỆM {calculateItemSavings(item).toLocaleString('vi-VN')}₫
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
 
           {/* Cart Totals */}
