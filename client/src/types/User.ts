@@ -22,8 +22,18 @@ export interface User {
 
 
 
+export interface AuthState {
+  user: User | null
+  accessToken: string | null
+  isAuthenticated: boolean
+  
+  setAuth: (user: User, accessToken: string) => void
+  logout: () => void
+}
 export interface AuthResponse {
-  accessToken: string;
-  refreshToken: string;
-  user: User;
+  username: string;           
+  email: string;              
+  fullName: string;           
+  phoneNumber: string;
+  password: string;
 }

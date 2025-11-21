@@ -22,29 +22,46 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 
+import { useAuthStore } from "@/store/useAuthStore"
+import { authService } from "@/service/auth.service"
+import { useRouter } from "next/navigation"
+
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
-
+  const router = useRouter();
+  const { setAuth } = useAuthStore() 
   
   const form = useForm<LoginRequest>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
-      email: "",
+      identifier: "",
       password: "",
     },
   })
 
   
-  async function onSubmit(values: LoginRequest) {
+ async function onSubmit(values: LoginRequest) {
     setIsLoading(true)
     try {
-      console.log("Dữ liệu hợp lệ gửi đi:", values)
+      if(isLoading) return;
+      console.log("Submitting", values);
+      const data = await authService.login(values)
+      if(!data.user && !data.accessToken) throw new Error("Đăng nhập thất bại");
       
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+      
+      setAuth(data.user!, data.accessToken!)
+      
+      alert("Đăng nhập thành công!") 
       
       
-    } catch (error) {
+      router.push("/")
+      
+
+
+    } catch (error: any) {
       console.error(error)
+      const message = error.response?.data?.message || "Đăng nhập thất bại"
+      alert(message)
     } finally {
       setIsLoading(false)
     }
@@ -69,24 +86,25 @@ export default function LoginPage() {
               
               
               <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="block text-sm font-medium text-gray-700 mb-1">
-                      Email
-                    </FormLabel>
-                    <FormControl>
-                      <Input 
-                        placeholder="name@example.com" 
-                        {...field} 
-                        className="bg-gray-50 focus-visible:ring-[#C46C2B]" 
-                      />
-                    </FormControl>
-                    <FormMessage className="text-red-500 text-xs" />
-                  </FormItem>
-                )}
-              />
+              control={form.control}
+              name="identifier"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="block text-sm font-medium text-gray-700 mb-1">
+                    Email hoặc Username
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="name@example.com hoặc username"
+                      {...field}
+                      className="bg-gray-50 focus-visible:ring-[#C46C2B]"
+                    />
+                  </FormControl>
+                  <FormMessage className="text-red-500 text-xs" />
+                </FormItem>
+              )}
+            />
+
 
               
               <FormField

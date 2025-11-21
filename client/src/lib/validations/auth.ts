@@ -2,10 +2,13 @@ import { z } from "zod"
 
 
 export const LoginSchema = z.object({
-  
-  email: z.string()
-    .min(1, "Vui lòng nhập email")
-    .email("Email không hợp lệ"),
+  identifier: z.string()
+  .min(3, "Vui lòng nhập email hoặc username")
+  .refine((value) => {
+    const isEmail = /\S+@\S+\.\S+/.test(value);
+    const isUsername = /^[a-zA-Z0-9_]+$/.test(value);
+    return isEmail || isUsername;
+  }, "Không hợp lệ, hãy nhập email hoặc username"),
   password: z.string()
     .min(1, "Vui lòng nhập mật khẩu")
     .min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
