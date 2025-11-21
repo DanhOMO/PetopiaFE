@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-import { trpc } from "@/utils/trpc";
+import { trpc } from "@/lib/utils/trpc";
 import { Loading } from "../../components/loading";
 import { ShoppingCart, Star, Heart } from "lucide-react";
 import { useRouter } from "next/navigation";
